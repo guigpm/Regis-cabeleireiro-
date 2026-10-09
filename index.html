@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111111">
+  <title>R&R Barbearia | Estilo e tradição</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #f5f5f5;
+      line-height: 1.6;
+    }
+    header {
+      background: #080808;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #b99a54;
+    }
+    .logo {
+      color: #d6b568;
+      font-size: 30px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+    header p { margin: 3px 0; color: #ccc; }
+    nav { margin-top: 15px; }
+    nav a {
+      color: #f1d28a;
+      text-decoration: none;
+      margin: 0 8px;
+      font-size: 14px;
+    }
+    .hero {
+      padding: 75px 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #242019, #080808 70%);
+    }
+    .hero h1 { font-size: 38px; margin: 0 0 15px; }
+    .gold { color: #d6b568; }
+    .hero p { color: #ddd; max-width: 550px; margin: 0 auto 25px; }
+    .btn {
+      display: inline-block;
+      background: #c9a653;
+      color: #111;
+      padding: 13px 22px;
+      border-radius: 5px;
+      font-weight: bold;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+    section { padding: 45px 18px; max-width: 1000px; margin: auto; }
+    h2 { text-align: center; color: #d6b568; margin-bottom: 25px; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: #1c1c1c;
+      padding: 23px;
+      border: 1px solid #403722;
+      border-radius: 9px;
+      text-align: center;
+    }
+    .card h3 { color: #f0d38d; }
+    .price { color: #d6b568; font-size: 23px; font-weight: bold; }
+    .booking {
+      max-width: 550px;
+      margin: auto;
+      background: #1c1c1c;
+      padding: 22px;
+      border-radius: 9px;
+    }
+    label { display: block; margin-top: 13px; }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border: 1px solid #555;
+      border-radius: 5px;
+      background: #101010;
+      color: white;
+      font-size: 16px;
+    }
+    .booking button { width: 100%; margin-top: 20px; }
+    footer {
+      text-align: center;
+      padding: 25px;
+      background: #080808;
+      color: #bbb;
+      border-top: 1px solid #b99a54;
+    }
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 30px; }
+      nav a { display: inline-block; margin: 5px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">R&R BARBEARIA</div>
+    <p>Seu estilo. Sua identidade.</p>
+    <nav>
+      <a href="#inicio">Início</a>
+      <a href="#servicos">Serviços</a>
+      <a href="#produtos">Produtos</a>
+      <a href="#agendar">Agendar</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero" id="inicio">
+      <h1>Mais que um corte.<br><span class="gold">Uma experiência.</span></h1>
+      <p>Estilo, cuidado e personalidade em cada detalhe. Venha renovar seu visual na R&R Barbearia.</p>
+      <a class="btn" href="#agendar">AGENDAR MEU HORÁRIO</a>
+    </div>
+
+    <section id="servicos">
+      <h2>Nossos serviços</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>✂️ Corte masculino</h3>
+          <p>Um visual feito para você.</p>
+          <div class="price">R$ 45,00</div>
+        </div>
+        <div class="card">
+          <h3>🪒 Barba</h3>
+          <p>Acabamento e cuidado.</p>
+          <div class="price">R$ 30,00</div>
+        </div>
+        <div class="card">
+          <h3>💈 Corte + barba</h3>
+          <p>O cuidado completo.</p>
+          <div class="price">R$ 65,00</div>
+        </div>
+      </div>
+      <p style="text-align:center;color:#aaa">Confirme os valores antes de divulgar o site.</p>
+    </section>
+
+    <section id="produtos">
+      <h2>Produtos e cuidados</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Pomadas modeladoras</h3>
+          <p>Para dar forma e estilo ao cabelo.</p>
+          <p class="gold">Consulte o preço na barbearia.</p>
+        </div>
+        <div class="card">
+          <h3>Cuidados com a barba</h3>
+          <p>Produtos para sua rotina de cuidados.</p>
+          <p class="gold">Consulte o preço na barbearia.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Sobre a R&R</h2>
+      <div class="card">
+        <p>Nosso objetivo é oferecer atendimento atencioso, qualidade e estilo em um ambiente pensado para você.</p>
+        <p class="gold">Seu visual merece esse cuidado.</p>
+      </div>
+    </section>
+
+    <section id="agendar">
+      <h2>Solicite seu agendamento</h2>
+      <div class="booking">
+        <p>Preencha seus dados para enviar uma solicitação pelo WhatsApp.</p>
+        <form id="bookingForm">
+          <label for="nome">Seu nome</label>
+          <input id="nome" required placeholder="Digite seu nome">
+
+          <label for="servico">Escolha o serviço</label>
+          <select id="servico" required>
+            <option value="">Selecione</option>
+            <option>Corte masculino</option>
+            <option>Barba</option>
+            <option>Corte + barba</option>
+          </select>
+
+          <label for="data">Data desejada</label>
+          <input id="data" type="date" required>
+
+          <label for="hora">Horário desejado</label>
+          <select id="hora" required>
+            <option value="">Selecione</option>
+            <option>09:00</option>
+            <option>09:30</option>
+            <option>10:00</option>
+            <option>10:30</option>
+            <option>11:00</option>
+            <option>11:30</option>
+            <option>13:00</option>
+            <option>13:30</option>
+            <option>14:00</option>
+            <option>14:30</option>
+            <option>15:00</option>
+            <option>15:30</option>
+            <option>16:00</option>
+            <option>16:30</option>
+            <option>17:00</option>
+            <option>17:30</option>
+          </select>
+
+          <button class="btn" type="submit">PEDIR AGENDAMENTO PELO WHATSAPP</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong class="gold">R&R BARBEARIA</strong></p>
+    <p>Estilo e tradição em cada detalhe.</p>
+    <p>© R&R Barbearia</p>
+  </footer>
+
+  <script>
+    document.getElementById("data").min =
+      new Date().toLocaleDateString("en-CA");
+
+    document.getElementById("bookingForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const nome = document.getElementById("nome").value.trim();
+      const servico = document.getElementById("servico").value;
+      const data = document.getElementById("data").value;
+      const hora = document.getElementById("hora").value;
+
+      const mensagem =
+        "Olá! Gostaria de solicitar um agendamento na R&R Barbearia.%0A" +
+        "Nome: " + encodeURIComponent(nome) + "%0A" +
+        "Serviço: " + encodeURIComponent(servico) + "%0A" +
+        "Data: " + encodeURIComponent(data) + "%0A" +
+        "Horário desejado: " + encodeURIComponent(hora);
+
+      window.open("https://wa.me/5541988757817?text=" + mensagem, "_blank");
+    });
+  </script>
+</body>
+</html>
