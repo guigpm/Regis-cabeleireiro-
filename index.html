@@ -2,244 +2,460 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#111111">
-  <title>R&R Barbearia | Estilo e tradição</title>
-  <style>
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #f5f5f5;
-      line-height: 1.6;
-    }
-    header {
-      background: #080808;
-      padding: 20px;
-      text-align: center;
-      border-bottom: 1px solid #b99a54;
-    }
-    .logo {
-      color: #d6b568;
-      font-size: 30px;
-      font-weight: bold;
-      letter-spacing: 2px;
-    }
-    header p { margin: 3px 0; color: #ccc; }
-    nav { margin-top: 15px; }
-    nav a {
-      color: #f1d28a;
-      text-decoration: none;
-      margin: 0 8px;
-      font-size: 14px;
-    }
-    .hero {
-      padding: 75px 20px;
-      text-align: center;
-      background: linear-gradient(135deg, #242019, #080808 70%);
-    }
-    .hero h1 { font-size: 38px; margin: 0 0 15px; }
-    .gold { color: #d6b568; }
-    .hero p { color: #ddd; max-width: 550px; margin: 0 auto 25px; }
-    .btn {
-      display: inline-block;
-      background: #c9a653;
-      color: #111;
-      padding: 13px 22px;
-      border-radius: 5px;
-      font-weight: bold;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-    }
-    section { padding: 45px 18px; max-width: 1000px; margin: auto; }
-    h2 { text-align: center; color: #d6b568; margin-bottom: 25px; }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 16px;
-    }
-    .card {
-      background: #1c1c1c;
-      padding: 23px;
-      border: 1px solid #403722;
-      border-radius: 9px;
-      text-align: center;
-    }
-    .card h3 { color: #f0d38d; }
-    .price { color: #d6b568; font-size: 23px; font-weight: bold; }
-    .booking {
-      max-width: 550px;
-      margin: auto;
-      background: #1c1c1c;
-      padding: 22px;
-      border-radius: 9px;
-    }
-    label { display: block; margin-top: 13px; }
-    input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 5px;
-      border: 1px solid #555;
-      border-radius: 5px;
-      background: #101010;
-      color: white;
-      font-size: 16px;
-    }
-    .booking button { width: 100%; margin-top: 20px; }
-    footer {
-      text-align: center;
-      padding: 25px;
-      background: #080808;
-      color: #bbb;
-      border-top: 1px solid #b99a54;
-    }
-    @media (max-width: 480px) {
-      .hero h1 { font-size: 30px; }
-      nav a { display: inline-block; margin: 5px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<title>Régis Cabeleireiros</title>
+<style>
+:root {
+  --gold: #d6b568;
+  --black: #111111;
+  --panel: #1c1c1c;
+  --white: #f5f5f5;
+  --muted: #bdbdbd;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--black);
+  color: var(--white);
+  line-height: 1.6;
+}
+header {
+  text-align: center;
+  padding: 24px 16px;
+  background: #080808;
+  border-bottom: 1px solid #6e5730;
+}
+.logo {
+  color: var(--gold);
+  font-size: 27px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+header p { margin: 3px 0; color: #ccc; }
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 14px 8px;
+  background: #181818;
+}
+nav a {
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 14px;
+}
+.hero {
+  padding: 65px 20px;
+  text-align: center;
+  background: linear-gradient(135deg,#302419,#080808 75%);
+}
+.hero h1 { font-size: clamp(30px,7vw,44px); line-height: 1.2; }
+.gold { color: var(--gold); }
+.hero p { color: #ddd; max-width: 540px; margin: 18px auto 25px; }
+.btn {
+  display: inline-block;
+  background: var(--gold);
+  color: #111;
+  padding: 12px 19px;
+  border: 0;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 15px;
+}
+.btn.secondary {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+}
+section {
+  padding: 38px 16px;
+  max-width: 1000px;
+  margin: auto;
+}
+h2 { text-align: center; color: var(--gold); margin: 0 0 24px; }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
+  gap: 15px;
+}
+.card {
+  background: var(--panel);
+  padding: 20px;
+  border: 1px solid #403722;
+  border-radius: 9px;
+}
+.card h3 { margin-top: 0; }
+.price { color: var(--gold); font-size: 22px; font-weight: bold; }
+form {
+  max-width: 550px;
+  margin: auto;
+  background: var(--panel);
+  padding: 22px;
+  border: 1px solid #403722;
+  border-radius: 9px;
+}
+label { display: block; margin: 13px 0 5px; }
+input, select, textarea {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background: #101010;
+  color: white;
+  font: inherit;
+}
+textarea { min-height: 75px; resize: vertical; }
+form .btn { width: 100%; margin-top: 18px; }
+.note { color: var(--muted); font-size: 13px; }
+.admin {
+  border-top: 1px solid #403722;
+  margin-top: 20px;
+}
+.admin h3 { color: var(--gold); }
+.item {
+  border-bottom: 1px solid #444;
+  padding: 10px 0;
+  overflow-wrap: anywhere;
+}
+.item button { margin: 5px 0 0 8px; }
+footer {
+  text-align: center;
+  padding: 25px 15px;
+  background: #080808;
+  color: #bbb;
+  border-top: 1px solid #6e5730;
+}
+</style>
 </head>
 <body>
-  <header>
-    <div class="logo">R&R BARBEARIA</div>
-    <p>Seu estilo. Sua identidade.</p>
-    <nav>
-      <a href="#inicio">Início</a>
-      <a href="#servicos">Serviços</a>
-      <a href="#produtos">Produtos</a>
-      <a href="#agendar">Agendar</a>
-    </nav>
-  </header>
 
-  <main>
-    <div class="hero" id="inicio">
-      <h1>Mais que um corte.<br><span class="gold">Uma experiência.</span></h1>
-      <p>Estilo, cuidado e personalidade em cada detalhe. Venha renovar seu visual na R&R Barbearia.</p>
-      <a class="btn" href="#agendar">AGENDAR MEU HORÁRIO</a>
+<header>
+  <div class="logo">RÉGIS CABELEIREIROS</div>
+  <p>Estilo, tradição e cuidado em cada detalhe.</p>
+</header>
+
+<nav>
+  <a href="#inicio">Início</a>
+  <a href="#servicos">Serviços</a>
+  <a href="#agendar">Agendar</a>
+  <a href="#horarios">Horários</a>
+</nav>
+
+<main>
+<section class="hero" id="inicio">
+  <p class="gold">SUA MELHOR VERSÃO COMEÇA AQUI</p>
+  <h1>Seu estilo.<br><span class="gold">Sua identidade.</span></h1>
+  <p>Um atendimento especial, com atenção aos detalhes e cuidado com o seu visual.</p>
+  <a class="btn" href="#agendar">Solicitar agendamento</a>
+</section>
+
+<section id="servicos">
+  <h2>Nossos serviços</h2>
+  <div class="cards" id="listaServicos"></div>
+  <p class="note">Os preços de demonstração podem ser alterados na área do profissional.</p>
+</section>
+
+<section id="agendar">
+  <h2>Solicite seu horário</h2>
+  <form id="formAgendamento">
+    <label for="cliente">Seu nome</label>
+    <input id="cliente" required maxlength="80" placeholder="Digite seu nome">
+
+    <label for="telefone">Seu telefone</label>
+    <input id="telefone" type="tel" required placeholder="(41) 99999-9999">
+
+    <label for="servico">Escolha o serviço</label>
+    <select id="servico" required></select>
+
+    <label for="data">Data desejada</label>
+    <input id="data" type="date" required>
+
+    <label for="hora">Horário desejado</label>
+    <select id="hora" required>
+      <option value="">Escolha uma data primeiro</option>
+    </select>
+
+    <label for="observacoes">Observações (opcional)</label>
+    <textarea id="observacoes" maxlength="300" placeholder="Conte se tem alguma preferência"></textarea>
+
+    <p class="note" id="avisoAgenda">
+      O horário será confirmado pelo profissional via WhatsApp.
+    </p>
+    <button class="btn" type="submit">Continuar pelo WhatsApp</button>
+  </form>
+</section>
+
+<section id="horarios">
+  <h2>Área do profissional</h2>
+  <div class="card">
+    <p>Cadastre bloqueios para almoço, folgas ou compromissos. Nesta versão, eles ficam salvos apenas neste navegador.</p>
+    <button class="btn secondary" id="abrirAdmin" type="button">Gerenciar horários</button>
+    <div id="painelAdmin" hidden>
+      <h3>Bloquear um horário</h3>
+      <form id="formBloqueio">
+        <label for="tipoBloqueio">Tipo de bloqueio</label>
+        <select id="tipoBloqueio">
+          <option value="Almoço">Almoço</option>
+          <option value="Folga">Folga</option>
+          <option value="Compromisso">Compromisso</option>
+        </select>
+        <label for="dataBloqueio">Data</label>
+        <input id="dataBloqueio" type="date" required>
+        <label for="inicioBloqueio">Início</label>
+        <input id="inicioBloqueio" type="time" required>
+        <label for="fimBloqueio">Fim</label>
+        <input id="fimBloqueio" type="time" required>
+        <button class="btn" type="submit">Salvar bloqueio</button>
+      </form>
+      <h3>Bloqueios cadastrados</h3>
+      <div id="listaBloqueios"></div>
+      <p class="note">Para segurança, esta área ainda não possui senha. Não a considere um painel administrativo protegido.</p>
     </div>
+  </div>
+</section>
+</main>
 
-    <section id="servicos">
-      <h2>Nossos serviços</h2>
-      <div class="cards">
-        <div class="card">
-          <h3>✂️ Corte masculino</h3>
-          <p>Um visual feito para você.</p>
-          <div class="price">R$ 45,00</div>
-        </div>
-        <div class="card">
-          <h3>🪒 Barba</h3>
-          <p>Acabamento e cuidado.</p>
-          <div class="price">R$ 30,00</div>
-        </div>
-        <div class="card">
-          <h3>💈 Corte + barba</h3>
-          <p>O cuidado completo.</p>
-          <div class="price">R$ 65,00</div>
-        </div>
-      </div>
-      <p style="text-align:center;color:#aaa">Confirme os valores antes de divulgar o site.</p>
-    </section>
+<footer>
+  <div class="logo">RÉGIS CABELEIREIROS</div>
+  <p>Obrigado pela preferência!</p>
+  <p>© <span id="ano"></span> Régis Cabeleireiros</p>
+</footer>
 
-    <section id="produtos">
-      <h2>Produtos e cuidados</h2>
-      <div class="cards">
-        <div class="card">
-          <h3>Pomadas modeladoras</h3>
-          <p>Para dar forma e estilo ao cabelo.</p>
-          <p class="gold">Consulte o preço na barbearia.</p>
-        </div>
-        <div class="card">
-          <h3>Cuidados com a barba</h3>
-          <p>Produtos para sua rotina de cuidados.</p>
-          <p class="gold">Consulte o preço na barbearia.</p>
-        </div>
-      </div>
-    </section>
+<script>
+const WHATSAPP = "5541988757817";
 
-    <section>
-      <h2>Sobre a R&R</h2>
-      <div class="card">
-        <p>Nosso objetivo é oferecer atendimento atencioso, qualidade e estilo em um ambiente pensado para você.</p>
-        <p class="gold">Seu visual merece esse cuidado.</p>
-      </div>
-    </section>
+const servicosPadrao = [
+  {nome:"Corte masculino", preco:35, minutos:30},
+  {nome:"Corte + barba", preco:55, minutos:50},
+  {nome:"Barba", preco:25, minutos:25},
+  {nome:"Acabamento / pezinho", preco:15, minutos:15}
+];
 
-    <section id="agendar">
-      <h2>Solicite seu agendamento</h2>
-      <div class="booking">
-        <p>Preencha seus dados para enviar uma solicitação pelo WhatsApp.</p>
-        <form id="bookingForm">
-          <label for="nome">Seu nome</label>
-          <input id="nome" required placeholder="Digite seu nome">
+function ler(chave, padrao) {
+  try {
+    const valor = localStorage.getItem(chave);
+    return valor ? JSON.parse(valor) : padrao;
+  } catch (e) {
+    return padrao;
+  }
+}
+function salvar(chave, valor) {
+  try {
+    localStorage.setItem(chave, JSON.stringify(valor));
+    return true;
+  } catch (e) {
+    alert("Não foi possível salvar neste navegador.");
+    return false;
+  }
+}
 
-          <label for="servico">Escolha o serviço</label>
-          <select id="servico" required>
-            <option value="">Selecione</option>
-            <option>Corte masculino</option>
-            <option>Barba</option>
-            <option>Corte + barba</option>
-          </select>
+let servicos = ler("regis_servicos", servicosPadrao);
+let bloqueios = ler("regis_bloqueios", []);
 
-          <label for="data">Data desejada</label>
-          <input id="data" type="date" required>
+const $ = id => document.getElementById(id);
+$("ano").textContent = new Date().getFullYear();
 
-          <label for="hora">Horário desejado</label>
-          <select id="hora" required>
-            <option value="">Selecione</option>
-            <option>09:00</option>
-            <option>09:30</option>
-            <option>10:00</option>
-            <option>10:30</option>
-            <option>11:00</option>
-            <option>11:30</option>
-            <option>13:00</option>
-            <option>13:30</option>
-            <option>14:00</option>
-            <option>14:30</option>
-            <option>15:00</option>
-            <option>15:30</option>
-            <option>16:00</option>
-            <option>16:30</option>
-            <option>17:00</option>
-            <option>17:30</option>
-          </select>
+function moeda(valor) {
+  return Number(valor).toLocaleString("pt-BR", {
+    style:"currency", currency:"BRL"
+  });
+}
 
-          <button class="btn" type="submit">PEDIR AGENDAMENTO PELO WHATSAPP</button>
-        </form>
-      </div>
-    </section>
-  </main>
+function desenharServicos() {
+  $("listaServicos").innerHTML = "";
+  $("servico").innerHTML = '<option value="">Selecione um serviço</option>';
 
-  <footer>
-    <p><strong class="gold">R&R BARBEARIA</strong></p>
-    <p>Estilo e tradição em cada detalhe.</p>
-    <p>© R&R Barbearia</p>
-  </footer>
+  servicos.forEach((s, i) => {
+    const card = document.createElement("article");
+    card.className = "card";
+    const nome = document.createElement("h3");
+    nome.textContent = s.nome;
+    const preco = document.createElement("div");
+    preco.className = "price";
+    preco.textContent = moeda(s.preco);
+    const duracao = document.createElement("p");
+    duracao.textContent = "Duração aproximada: " + s.minutos + " minutos";
+    card.append(nome, preco, duracao);
+    $("listaServicos").appendChild(card);
 
-  <script>
-    document.getElementById("data").min =
-      new Date().toLocaleDateString("en-CA");
+    const op = document.createElement("option");
+    op.value = String(i);
+    op.textContent = s.nome + " — " + moeda(s.preco);
+    $("servico").appendChild(op);
+  });
+}
 
-    document.getElementById("bookingForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const nome = document.getElementById("nome").value.trim();
-      const servico = document.getElementById("servico").value;
-      const data = document.getElementById("data").value;
-      const hora = document.getElementById("hora").value;
+function minutos(hora) {
+  const partes = hora.split(":").map(Number);
+  return partes[0] * 60 + partes[1];
+}
 
-      const mensagem =
-        "Olá! Gostaria de solicitar um agendamento na R&R Barbearia.%0A" +
-        "Nome: " + encodeURIComponent(nome) + "%0A" +
-        "Serviço: " + encodeURIComponent(servico) + "%0A" +
-        "Data: " + encodeURIComponent(data) + "%0A" +
-        "Horário desejado: " + encodeURIComponent(hora);
+function bloqueado(data, hora, duracao) {
+  const inicio = minutos(hora);
+  const fim = inicio + duracao;
+  return bloqueios.some(b =>
+    b.data === data &&
+    inicio < minutos(b.fim) &&
+    fim > minutos(b.inicio)
+  );
+}
 
-      window.open("https://wa.me/5541988757817?text=" + mensagem, "_blank");
+function atualizarHoras() {
+  const data = $("data").value;
+  const select = $("hora");
+  select.innerHTML = "";
+  const opcaoInicial = document.createElement("option");
+  opcaoInicial.value = "";
+  opcaoInicial.textContent = "Escolha um horário";
+  select.appendChild(opcaoInicial);
+
+  if (!data) return;
+
+  const agora = new Date();
+  const hoje = agora.getFullYear() + "-" +
+    String(agora.getMonth()+1).padStart(2,"0") + "-" +
+    String(agora.getDate()).padStart(2,"0");
+
+  const indice = $("servico").value;
+  const duracao = indice === "" ? 30 : servicos[Number(indice)].minutos;
+  let quantidade = 0;
+
+  for (let m = 9 * 60; m <= 18 * 60; m += 30) {
+    const h = String(Math.floor(m/60)).padStart(2,"0") +
+      ":" + String(m%60).padStart(2,"0");
+    if (m + duracao > 18*60) continue;
+    if (data === hoje && m <= agora.getHours()*60 + agora.getMinutes()) continue;
+    if (bloqueado(data, h, duracao)) continue;
+
+    const op = document.createElement("option");
+    op.value = h;
+    op.textContent = h;
+    select.appendChild(op);
+    quantidade++;
+  }
+
+  if (!quantidade) {
+    opcaoInicial.textContent = "Sem horários disponíveis nesta data";
+  }
+}
+
+function desenharBloqueios() {
+  const lista = $("listaBloqueios");
+  lista.innerHTML = "";
+  if (!bloqueios.length) {
+    lista.textContent = "Nenhum bloqueio cadastrado.";
+    return;
+  }
+
+  bloqueios.forEach((b, i) => {
+    const item = document.createElement("div");
+    item.className = "item";
+    const texto = document.createElement("span");
+    texto.textContent = `${b.tipo}: ${b.data}, ${b.inicio} às ${b.fim}`;
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "btn secondary";
+    botao.textContent = "Excluir";
+    botao.addEventListener("click", () => {
+      if (confirm("Deseja excluir este bloqueio?")) {
+        bloqueios.splice(i, 1);
+        salvar("regis_bloqueios", bloqueios);
+        desenharBloqueios();
+        atualizarHoras();
+      }
     });
-  </script>
+    item.append(texto, botao);
+    lista.appendChild(item);
+  });
+}
+
+$("data").min = new Date().getFullYear() + "-" +
+  String(new Date().getMonth()+1).padStart(2,"0") + "-" +
+  String(new Date().getDate()).padStart(2,"0");
+$("dataBloqueio").min = $("data").min;
+
+$("data").addEventListener("change", atualizarHoras);
+$("servico").addEventListener("change", atualizarHoras);
+
+$("formAgendamento").addEventListener("submit", e => {
+  e.preventDefault();
+
+  const nome = $("cliente").value.trim();
+  const telefone = $("telefone").value.trim();
+  const data = $("data").value;
+  const hora = $("hora").value;
+  const indice = $("servico").value;
+
+  if (indice === "" || !hora) {
+    alert("Escolha o serviço, a data e um horário disponível.");
+    return;
+  }
+
+  const servico = servicos[Number(indice)];
+  if (bloqueado(data, hora, servico.minutos)) {
+    alert("Este horário está bloqueado. Escolha outro.");
+    atualizarHoras();
+    return;
+  }
+
+  const mensagem =
+    "Olá, Régis! Gostaria de solicitar um agendamento.\n\n" +
+    "Nome: " + nome + "\n" +
+    "Telefone: " + telefone + "\n" +
+    "Serviço: " + servico.nome + "\n" +
+    "Preço: " + moeda(servico.preco) + "\n" +
+    "Data: " + data.split("-").reverse().join("/") + "\n" +
+    "Horário desejado: " + hora + "\n" +
+    "Observações: " + ($("observacoes").value.trim() || "Nenhuma") +
+    "\n\nAguardo a confirmação do horário.";
+
+  window.open(
+    "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(mensagem),
+    "_blank"
+  );
+});
+
+$("abrirAdmin").addEventListener("click", () => {
+  $("painelAdmin").hidden = !$("painelAdmin").hidden;
+  if (!$("painelAdmin").hidden) desenharBloqueios();
+});
+
+$("formBloqueio").addEventListener("submit", e => {
+  e.preventDefault();
+  const data = $("dataBloqueio").value;
+  const inicio = $("inicioBloqueio").value;
+  const fim = $("fimBloqueio").value;
+
+  if (minutos(fim) <= minutos(inicio)) {
+    alert("O horário final precisa ser posterior ao inicial.");
+    return;
+  }
+
+  const novo = {
+    tipo:$("tipoBloqueio").value,
+    data, inicio, fim
+  };
+
+  bloqueios.push(novo);
+  if (salvar("regis_bloqueios", bloqueios)) {
+    desenharBloqueios();
+    atualizarHoras();
+    e.target.reset();
+    $("dataBloqueio").min = $("data").min;
+    alert("Bloqueio salvo neste navegador.");
+  }
+});
+
+desenharServicos();
+atualizarHoras();
+</script>
 </body>
 </html>
