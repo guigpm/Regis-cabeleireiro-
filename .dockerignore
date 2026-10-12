@@ -1,0 +1,14 @@
+# Lista permitida: não envia .env, bancos, Git, backups ou arquivos locais ao build.
+**
+!Dockerfile
+!package.json
+!package-lock.json
+!server/
+!server/**
+!public/
+!public/**
+!test/
+!test/**
+**/*.sqlite*
+**/.env*
+**/node_modules
