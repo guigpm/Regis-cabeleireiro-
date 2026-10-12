@@ -1,0 +1,163 @@
+{
+  "services": [
+    {
+      "id": 1,
+      "name": "Corte Degradê / Social",
+      "price": 50,
+      "duration": 45
+    },
+    {
+      "id": 19,
+      "name": "Corte Social Tesoura",
+      "price": 50,
+      "duration": 45
+    },
+    {
+      "id": 7,
+      "name": "Corte Raspado",
+      "price": 30,
+      "duration": 20
+    },
+    {
+      "id": 4,
+      "name": "Acabamento / Pezinho",
+      "price": 25,
+      "duration": 15
+    },
+    {
+      "id": 2,
+      "name": "Barba Terapia com Toalha Quente",
+      "price": 50,
+      "duration": 45
+    },
+    {
+      "id": 3,
+      "name": "Combo R&R (Corte + Barba)",
+      "price": 95,
+      "duration": 60
+    },
+    {
+      "id": 5,
+      "name": "Sobrancelha na Navalha",
+      "price": 20,
+      "duration": 10
+    },
+    {
+      "id": 6,
+      "name": "Sobrancelha na Pinça",
+      "price": 30,
+      "duration": 15
+    },
+    {
+      "id": 8,
+      "name": "Depilação Nariz",
+      "price": 20,
+      "duration": 10
+    },
+    {
+      "id": 9,
+      "name": "Depilação Orelha",
+      "price": 20,
+      "duration": 10
+    },
+    {
+      "id": 10,
+      "name": "Combo Nariz e Orelha",
+      "price": 35,
+      "duration": 15
+    },
+    {
+      "id": 11,
+      "name": "Luzes (a partir de)",
+      "price": 90,
+      "duration": 90
+    },
+    {
+      "id": 12,
+      "name": "Platinado (a partir de)",
+      "price": 150,
+      "duration": 120
+    },
+    {
+      "id": 13,
+      "name": "Selagem (a partir de)",
+      "price": 100,
+      "duration": 90
+    },
+    {
+      "id": 14,
+      "name": "Camuflagem de Barba",
+      "price": 45,
+      "duration": 30
+    },
+    {
+      "id": 15,
+      "name": "Tintura de Cabelo (a partir de)",
+      "price": 70,
+      "duration": 45
+    },
+    {
+      "id": 16,
+      "name": "Hidratação de Barba",
+      "price": 20,
+      "duration": 15
+    },
+    {
+      "id": 17,
+      "name": "Hidratação de Cabelo",
+      "price": 20,
+      "duration": 20
+    },
+    {
+      "id": 18,
+      "name": "Hidratação de Pele",
+      "price": 50,
+      "duration": 30
+    }
+  ],
+  "barbers": [
+    {
+      "id": 1,
+      "name": "Rodrigo \"R1\"",
+      "spec": "Especialista em Degradê e Navalha",
+      "photo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=240&h=240&fit=crop&crop=faces"
+    },
+    {
+      "id": 2,
+      "name": "Renan \"R2\"",
+      "spec": "Master Barber & Design de Barba",
+      "photo": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=240&h=240&fit=crop&crop=faces"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Pomada Modeladora Matte 150g",
+      "price": 45,
+      "category": "Cabelo",
+      "image": "https://images.unsplash.com/photo-1626285861696-9f0bf5a49c6d?w=500&q=80"
+    },
+    {
+      "id": 2,
+      "name": "Óleo para Barba Premium 30ml",
+      "price": 38,
+      "category": "Barba",
+      "image": "https://images.unsplash.com/photo-1608248597261-833244722894?w=500&q=80"
+    },
+    {
+      "id": 3,
+      "name": "Shampoo Mentolado Refrescante",
+      "price": 42,
+      "category": "Cabelo",
+      "image": "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=500&q=80"
+    },
+    {
+      "id": 4,
+      "name": "Balm para Barba",
+      "price": 32,
+      "category": "Barba",
+      "image": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=500&q=80"
+    }
+  ],
+  "whatsapp": "5541988757817"
+}

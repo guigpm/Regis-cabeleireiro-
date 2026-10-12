@@ -808,3 +808,25 @@ input[type=date] {
   margin-top: 12px;
   font-weight: 800;
 }
+
+/* Formulários e estados compartilhados entre cliente e painel. */
+.select-card { color: var(--text); text-align: left; }
+.service-duration { display: block; }
+button:disabled { opacity: .55; cursor: wait; }
+.booking-success { font-size: .85rem; line-height: 1.7; overflow-wrap: anywhere; }
+[hidden] { display: none !important; }
+.admin-app { max-width: 1000px; padding: 20px; margin: 0 auto; }
+.admin-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.admin-header h1 { font-family: Cinzel, serif; color: var(--gold2); font-size: 1.4rem; }
+.admin-login { max-width: 420px; margin: 40px auto; }
+.admin-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.admin-record { padding: 14px; border: 1px solid var(--line); border-radius: 12px; margin: 10px 0; overflow-wrap: anywhere; }
+.admin-record p { margin: 5px 0; }
+.admin-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.hours-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.hours-row label { font-size: .8rem; }
+.hours-row .form-control { margin: 0; }
+.admin-status { min-height: 24px; font-size: .85rem; color: var(--gold2); }
+.admin-photo { width: 55px; height: 55px; object-fit: cover; border-radius: 8px; }
+@media (max-width: 480px) { .admin-app { padding: 12px; } .hours-row { grid-template-columns: 1fr 1fr; } .hours-row > label:first-child { grid-column: 1 / -1; } }

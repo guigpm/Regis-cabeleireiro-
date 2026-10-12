@@ -1,7 +1,6 @@
 "use strict";
 
 // Itens do carrinho, totais e pedido pelo WhatsApp.
-
 function addToCart(id) {
   let p = products.find(x => x.id === id);
   if (p) {
@@ -12,12 +11,10 @@ function addToCart(id) {
     toast('Produto adicionado ao carrinho.');
   }
 }
-
 function openCart() {
   $('cartModal').classList.add('active');
   renderCart();
 }
-
 function renderCart() {
   let total = 0;
   $('cartItems').innerHTML = cart.map((p, i) => {
@@ -27,12 +24,10 @@ function renderCart() {
   $('cartTotal').textContent = money(total);
   $('cartBadge').textContent = cart.length;
 }
-
 function removeCart(i) {
   cart.splice(i, 1);
   renderCart();
 }
-
 function checkoutCart() {
   if (!cart.length) {
     toast('Seu carrinho está vazio.');
