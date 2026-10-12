@@ -19,9 +19,17 @@ No primeiro início, o banco é criado e recebe os serviços, equipe e produtos 
 Uma senha administrativa aleatória é exibida **uma única vez no terminal**. Guarde-a.
 Ela é armazenada no banco como hash com salt, nunca em texto puro.
 
-Para configurar porta, banco e senha inicial, copie `.env.example` para `.env` e edite
-os valores antes da primeira execução. `ADMIN_PASSWORD`, quando informado, deve ter
-entre 12 e 200 caracteres e só é usado quando o banco ainda não tem senha cadastrada.
+Para configurar a senha, preencha `ADMIN_PASSWORD` no `.env` (copie `.env.example`
+se o arquivo ainda não existir) e reinicie o servidor:
+
+```dotenv
+ADMIN_PASSWORD="sua-senha-com-12-ou-mais-caracteres"
+```
+
+Use entre 12 e 200 caracteres. Quando preenchida, essa variável define a senha do
+painel em cada inicialização, inclusive quando o banco já existe. Uma senha inválida
+impede a inicialização. Se a variável estiver vazia ou ausente, a senha já cadastrada
+é mantida; uma senha aleatória só é gerada se ainda não houver nenhuma.
 O arquivo `.env` e os bancos de dados são ignorados pelo Git.
 
 ```sh
@@ -31,6 +39,8 @@ npm run admin:password  # Define ou redefine a senha do painel pelo terminal
 ```
 
 Depois de redefinir a senha, reinicie o servidor para invalidar sessões existentes.
+Se `ADMIN_PASSWORD` estiver preenchido, ele prevalece sobre a senha definida pelo
+comando `admin:password` no próximo início; nesse caso, altere a senha no `.env`.
 O comando de troca de senha mostra a digitação no terminal. O frontend não usa hot
 reload: recarregue o navegador depois de alterar HTML, CSS ou JavaScript.
 

@@ -13,10 +13,13 @@ export function createAuth(db, {
   secure = false,
   onInitialPassword = () => {}
 } = {}) {
-  if (!db.prepare("SELECT 1 FROM settings WHERE key='admin_password'").get()) {
-    const initial = password || randomBytes(18).toString('base64url');
+  // Quando configurada, a senha do ambiente é a fonte de verdade em cada início.
+  if (password !== undefined && password !== '') {
+    setPassword(db, password);
+  } else if (!db.prepare("SELECT 1 FROM settings WHERE key='admin_password'").get()) {
+    const initial = randomBytes(18).toString('base64url');
     setPassword(db, initial);
-    if (!password) onInitialPassword(initial);
+    onInitialPassword(initial);
   }
   const sessions = new Map();
   const cookie = (token, maxAge) => `rr_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${maxAge}${secure ? '; Secure' : ''}`;
