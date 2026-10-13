@@ -21,6 +21,7 @@ test('API, reservas concorrentes, autenticação e persistência', async t => {
     });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
+  let customerCookie = '';
   let cookie = '',
     appointmentId;
   const date = nextWeekday();
@@ -36,7 +37,9 @@ test('API, reservas concorrentes, autenticação e persistência', async t => {
         'Content-Type': 'application/json',
         ...(admin ? {
           Cookie: cookie
-        } : {}),
+        } : {
+          Cookie: customerCookie
+        }),
         ...headers
       },
       body: data === undefined ? undefined : JSON.stringify(data)
@@ -58,6 +61,18 @@ test('API, reservas concorrentes, autenticação e persistência', async t => {
     payment: 'Pix'
   };
   try {
+    const registered = await request('/api/customer/register', {
+      method: 'POST',
+      data: {
+        name: 'Cliente Teste',
+        email: 'teste@example.test',
+        cpf: '52998224725',
+        phone: '41999998888',
+        password: 'customer-password-123'
+      }
+    });
+    assert.equal(registered.status, 201);
+    customerCookie = registered.headers.get('set-cookie').split(';')[0];
     await t.test('cliente não contém painel e arquivos privados não são servidos', async () => {
       const home = await request('/');
       assert.equal(home.status, 200);
@@ -172,22 +187,6 @@ test('API, reservas concorrentes, autenticação e persistência', async t => {
       assert.equal(list[0].customer, booking.customer);
     });
     await t.test('validação rejeita entradas inválidas', async () => {
-      assert.equal((await request('/api/appointments', {
-        method: 'POST',
-        data: {
-          ...booking,
-          time: '12:00',
-          customer: ''
-        }
-      })).status, 400);
-      assert.equal((await request('/api/appointments', {
-        method: 'POST',
-        data: {
-          ...booking,
-          time: '12:00',
-          phone: '1'
-        }
-      })).status, 400);
       assert.equal((await request('/api/appointments', {
         method: 'POST',
         data: {

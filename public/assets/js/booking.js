@@ -4,6 +4,10 @@
 function renderBooking() {
   for (let i = 1; i <= 4; i++) $('dot' + i).classList.toggle('active', i <= step);
   const content = $('bookingContent');
+  if (step >= 3 && !currentCustomer?.complete) {
+    content.innerHTML = `<p class="notice">Entre e complete seu cadastro para consultar e escolher horários.</p><button class="btn btn-gold full" onclick="switchTab('conta')">Entrar ou criar conta</button>`;
+    return;
+  }
   if (step === 1) {
     content.innerHTML = `<h3 class="booking-heading small">Escolha seu serviço</h3>
       <div class="select-grid">${services.map(service => `
@@ -13,7 +17,7 @@ function renderBooking() {
         </button>`).join('') || '<p class="empty">Nenhum serviço disponível no momento.</p>'}</div>`;
   } else if (step === 2) {
     content.innerHTML = `<h3 class="booking-heading small">Escolha o barbeiro</h3>
-      <div class="select-grid">${barbers.map(barber => `
+      <div class="select-grid">${barbers.filter(barber => barber.allServices || barber.serviceIds.includes(booking.service.id)).map(barber => `
         <button type="button" class="select-card" onclick="chooseBarber(${barber.id})">
           <span class="barber-choice"><img class="barber-photo" src="${esc(barber.photo || LOGO)}" alt="Foto de ${esc(barber.name)}" onerror="this.onerror=null;this.src='${LOGO}'">
           <span class="barber-copy"><span class="name">${esc(barber.name)}</span><span class="detail service-duration">${esc(barber.spec)}</span></span></span>
@@ -31,10 +35,7 @@ function renderBooking() {
   } else {
     content.innerHTML = `<form id="bookingForm" onsubmit="confirmBooking(event)">
       <h3 class="booking-heading small">Seus dados e pagamento</h3>
-      <label class="small muted" for="customerName">Seu nome</label>
-      <input id="customerName" class="form-control" required minlength="2" maxlength="90" autocomplete="name" value="${esc(booking.customer)}" oninput="booking.customer=this.value">
-      <label class="small muted" for="customerPhone">Telefone com DDD</label>
-      <input id="customerPhone" class="form-control" required type="tel" maxlength="25" autocomplete="tel" placeholder="(41) 99999-9999" value="${esc(booking.phone)}" oninput="booking.phone=this.value">
+      <p class="small">Reserva para <strong>${esc(currentCustomer.name)}</strong> · ${esc(currentCustomer.phone)}</p>
       <label class="small muted" for="bookingPayment">Pagamento no atendimento</label>
       <select id="bookingPayment" class="form-control" required onchange="booking.payment=this.value">
         <option value="">Selecione</option>${['Pix', 'Cartão de Crédito', 'Cartão de Débito', 'Dinheiro'].map(p => `<option ${booking.payment === p ? 'selected' : ''}>${p}</option>`).join('')}
@@ -80,10 +81,12 @@ async function renderTimes() {
       serviceId: booking.service.id
     });
     const {
-      slots
+      slots,
+      timeline,
+      occupied
     } = await api('/api/availability?' + query);
     if (request !== slotsRequest || !box.isConnected) return;
-    box.innerHTML = slots.map(time => `<button class="time-btn" onclick="chooseTime('${time}')">${time}</button>`).join('') || '<p class="notice span-full">Nenhum horário disponível nesta data. Escolha outro dia ou profissional.</p>';
+    box.innerHTML = '<p class="small span-full schedule-legend">🟢 Livre · 🔴 Ocupado · Cinza: passado</p>' + timeline.map(item => `<button class="time-btn slot-${item.state}" ${item.state !== 'available' ? 'disabled' : `onclick="chooseTime('${item.time}')"`}>${item.time}<span class="service-duration">${item.state === 'available' ? 'Livre' : item.state === 'occupied' ? 'Ocupado' : 'Passado'}</span></button>`).join('') + (slots.length ? '' : '<p class="notice span-full">Nenhum horário livre nesta data.</p>') + (occupied.length ? `<p class="small muted span-full">Intervalos ocupados: ${occupied.map(item => `${item.start}–${item.end}`).join(', ')}</p>` : '');
   } catch (error) {
     if (request === slotsRequest && box.isConnected) box.innerHTML = `<p class="text-danger small span-full">${esc(error.message)}</p><button class="btn btn-outline span-full" onclick="renderTimes()">Tentar novamente</button>`;
   }
@@ -131,6 +134,10 @@ async function confirmBooking(event) {
       toast(error.message);
     } else {
       $('bookingError').textContent = error.message;
+      if (error.status === 401 || error.status === 403) {
+        currentCustomer = null;
+        renderAccount();
+      }
       $('confirmBookingButton').disabled = false;
       $('bookingBackButton').disabled = false;
       $('confirmBookingButton').textContent = 'Confirmar agendamento';

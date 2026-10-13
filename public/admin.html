@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="/assets/css/styles.css">
   <script src="/assets/js/config.js" defer></script>
   <script src="/assets/js/utils.js" defer></script>
+  <script src="/assets/js/admin-security.js" defer></script>
   <script src="/assets/js/admin.js" defer></script>
 </head>
 <body>
@@ -19,10 +20,12 @@
     <section id="loginSection" class="card admin-login">
       <h2 class="section-title">Acesso ao painel</h2>
       <form id="loginForm">
+        <label for="adminUsername" class="small">Usuário</label><input id="adminUsername" class="form-control" autocomplete="username" required value="root">
         <label for="adminPassword" class="small">Senha</label>
         <input id="adminPassword" class="form-control" type="password" autocomplete="current-password" required maxlength="200">
         <button class="btn btn-gold full" type="submit">Entrar</button>
       </form>
+      <form id="otpLoginForm" hidden><label for="adminOtpCode" class="small">Código do autenticador ou código de recuperação</label><input id="adminOtpCode" class="form-control" autocomplete="one-time-code" required maxlength="20"><button class="btn btn-gold full" type="submit">Verificar e entrar</button><button class="btn btn-muted full" type="button" onclick="resetAdminLogin()">Voltar ao login</button></form>
     </section>
     <section id="adminContent" hidden>
       <nav class="admin-tabs" aria-label="Seções do painel">
@@ -31,6 +34,10 @@
         <button class="btn btn-outline" data-section="barbers">Equipe</button>
         <button class="btn btn-outline" data-section="products">Produtos</button>
         <button class="btn btn-outline" data-section="hours">Expediente</button>
+        <button class="btn btn-outline" data-section="skills">Serviços por profissional</button>
+        <button class="btn btn-outline" data-section="walkins">Presenciais <span id="walkinCount"></span></button>
+        <button class="btn btn-outline" data-section="accounts">Administradores</button>
+        <button class="btn btn-outline" data-section="security">Segurança / OTP</button>
       </nav>
       <section id="panel-agenda" class="card admin-panel">
         <h2 class="section-title">Agenda e bloqueios</h2>
@@ -53,6 +60,10 @@
         </form>
         <div id="blocksList"></div>
       </section>
+      <section id="panel-skills" class="card admin-panel" hidden><h2 class="section-title">Serviços do profissional</h2><div id="skillsContent"></div></section>
+      <section id="panel-walkins" class="card admin-panel" hidden><h2 class="section-title">Solicitações presenciais</h2><p class="notice">Confirme somente quando o cliente estiver presente e você puder iniciar o atendimento. Pedidos expiram em 5 minutos.</p><button class="btn btn-outline" onclick="action(loadWalkins)">Atualizar</button><div id="walkinsContent"></div></section>
+      <section id="panel-accounts" class="card admin-panel" hidden><h2 class="section-title">Administradores</h2><div id="accountsContent"></div></section>
+      <section id="panel-security" class="card admin-panel" hidden><h2 class="section-title">Verificação em duas etapas</h2><div id="securityContent"></div></section>
       <section id="panel-services" class="card admin-panel" hidden></section>
       <section id="panel-barbers" class="card admin-panel" hidden></section>
       <section id="panel-products" class="card admin-panel" hidden></section>

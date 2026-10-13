@@ -1,3 +1,4 @@
+import { occupiedIntervals } from './booking.js';
 import { check, integer, text, price, image, date, minutes } from './validation.js';
 const fields = {
   services: ['name', 'price', 'duration'],
@@ -85,7 +86,7 @@ export function addBlock(db, data) {
   check(db.prepare('SELECT id FROM barbers WHERE id=? AND active=1').get(barberId), 'Profissional inexistente.', 404);
   db.exec('BEGIN IMMEDIATE');
   try {
-    check(!db.prepare("SELECT id FROM appointments WHERE barber_id=? AND date=? AND status='confirmed' AND start<? AND end>?").get(barberId, day, end, start), 'Há um agendamento nesse intervalo. Cancele-o antes de bloquear.', 409);
+    check(!occupiedIntervals(db, barberId, day).some(item => start < item.end && end > item.start), 'Há um agendamento nesse intervalo. Cancele-o antes de bloquear.', 409);
     const result = db.prepare('INSERT INTO blocks(barber_id,date,start,end,reason) VALUES(?,?,?,?,?)').run(barberId, day, start, end, reason);
     db.exec('COMMIT');
     return {

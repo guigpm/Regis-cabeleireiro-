@@ -19,11 +19,11 @@ docker-compose -p rr-barbearia -f compose.yaml up -d --build
 docker-compose -p rr-barbearia -f compose.yaml ps
 ```
 
-Acesse http://localhost:3000/ ou http://localhost:3000/painel. Em instalações com o
+Acesse http://localhost:4000/ ou http://localhost:4000/painel. Em instalações com o
 plugin Compose atual, substitua `docker-compose` por `docker compose` nos comandos.
 Mantenha `-p rr-barbearia` para identificar os mesmos recursos em todos os comandos.
 
-O Compose lê `ADMIN_PASSWORD` e `COOKIE_SECURE` do `.env`. Nenhuma senha ou banco é
+O Compose lê `ADMIN_PASSWORD`, `COOKIE_SECURE` e as variáveis `GOOGLE_*` do `.env`. Nenhuma senha ou banco é
 incluído na imagem. Se a senha estiver vazia, será mantida a senha do banco; somente
 um banco novo gera uma senha inicial nos logs:
 
@@ -35,19 +35,19 @@ Configurações opcionais no `.env`:
 
 ```dotenv
 ADMIN_PASSWORD="sua-senha-com-12-ou-mais-caracteres"
-DOCKER_PORT=3000
+DOCKER_PORT=4000
 DOCKER_BIND_IP=127.0.0.1
 DOCKER_DATA_VOLUME=rr-barbearia-data
 ```
 
 `DB_PATH`, `HOST` e `PORT` usados na execução direta com `npm start` são substituídos
-no contêiner por `/data/barbearia.sqlite`, `0.0.0.0` e `3000`. A porta publicada no
+no contêiner por `/data/barbearia.sqlite`, `0.0.0.0` e `4000`. A porta publicada no
 computador é `DOCKER_PORT`. Use outra porta se já houver um servidor Node em 3000.
 Para acesso pela rede local, altere `DOCKER_BIND_IP` para `0.0.0.0`.
 
 ### Atualizar o código ou a senha do .env
 
-Recrie o contêiner para aplicar alterações no `.env`; apenas `restart` não atualiza
+Use o mesmo projeto `-p rr-barbearia` em todos os comandos. Recrie o contêiner para aplicar alterações no `.env`; apenas `restart` não atualiza
 as variáveis. O fluxo abaixo também evita problemas de recriação nas versões antigas
 do Compose:
 
@@ -178,45 +178,124 @@ reverso e `COOKIE_SECURE=true`. O cookie seguro não funciona em HTTP comum. O s
 precisa permanecer ligado para aceitar reservas. O arquivo do banco não é servido
 pela aplicação. Em proxy reverso, preserve o cabeçalho `Host` original.
 
-## Fluxo do cliente
+## Cadastro de clientes e agenda
 
-1. Serviços, preços, durações, profissionais, produtos e expediente vêm do banco.
-2. O cliente escolhe serviço, profissional e data.
-3. A API retorna os horários livres, considerando expediente, duração, reservas e bloqueios.
-4. O cliente informa nome, telefone com DDD e pagamento e confirma.
-5. O servidor confere novamente o intervalo e grava a reserva em uma transação.
-6. A tela apresenta o código da reserva e um link opcional para enviar o comprovante pelo WhatsApp.
+O catálogo é público. A consulta de horários, reserva e solicitação presencial
+exigem sessão de cliente e cadastro completo (nome, e-mail, CPF e telefone com DDD).
+A área **Minha conta** permite criar cadastro, entrar com e-mail ou CPF e senha,
+consultar as próprias reservas e acompanhar a confirmação de pedidos presenciais.
+As senhas exigem 12 a 200 caracteres e são armazenadas com scrypt e salt.
 
-A reserva já está confirmada no banco antes do WhatsApp. Não há cobrança online.
-Os horários seguem `America/Sao_Paulo`, são oferecidos a cada 30 minutos a partir da
-abertura e precisam terminar dentro do expediente. O limite de antecedência é de 90
-dias. Intervalos sobrepostos são impedidos por profissional; profissionais distintos
-podem atender ao mesmo tempo. Se alguém reservar enquanto outra pessoa preenche o
-formulário, a segunda pessoa recebe uma mensagem para escolher outro horário.
+O CPF é normalizado, validado pelos dígitos verificadores e único por cliente.
+**Isso não comprova identidade, titularidade nem existência na Receita Federal.**
+O cadastro local também não verifica a titularidade do e-mail. Uma verificação de
+identidade real exigiria um serviço externo apropriado, não incluído nesta versão.
+O CPF completo não é enviado nas respostas da área do cliente: é exibido mascarado.
 
-O carrinho e os pedidos de produtos continuam sendo finalizados pelo WhatsApp;
-esta versão não inclui estoque, pagamento ou persistência dos pedidos da loja.
+A agenda mostra horários livres, ocupados e passados do profissional selecionado.
+Os ocupados ficam desabilitados e nenhum dado de outro cliente é exposto. Somente
+profissionais habilitados para o serviço aparecem na escolha. A validação é repetida
+no servidor ao reservar, considerando duração, expediente, bloqueios, reservas e
+solicitações presenciais pendentes. Duas reservas sobrepostas não são aceitas.
+Os dados do cliente vêm da sessão, não de um nome ou telefone enviado na reserva.
 
-## Painel
+A reserva normal é confirmada no banco antes do envio opcional de comprovante pelo
+WhatsApp. Não há cobrança online. A agenda segue `America/Sao_Paulo`, oferece início
+a cada 30 minutos e aceita datas nos próximos 90 dias. O carrinho continua sendo
+finalizado pelo WhatsApp, sem estoque ou persistência de pedidos nesta versão.
 
-Não existe link para o painel na área do cliente. A URL `/painel` exige login para
-acessar dados e operações. O endereço separado não substitui a senha: todas as APIs
-administrativas conferem a sessão. As sessões expiram em oito horas e são encerradas
-quando o servidor reinicia; os dados da agenda permanecem no banco.
+### Cadastro pelo Google
 
-No painel você pode:
+Crie um cliente OAuth do tipo **Aplicativo Web** no Google Cloud, configure a tela
+de consentimento e autorize exatamente a URI de retorno. Depois preencha o `.env`:
 
-- Consultar reservas por data, com cliente, telefone, serviço, preço e pagamento.
-- Cancelar uma reserva e liberar o intervalo. O cancelamento fica registrado.
-- Bloquear intervalos de um profissional para almoço, folga ou compromissos.
-- Criar, editar e remover serviços, profissionais e produtos, incluindo fotos.
-- Alterar abertura, fechamento e dias sem atendimento.
+```dotenv
+GOOGLE_CLIENT_ID="seu-client-id.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="seu-client-secret"
+GOOGLE_REDIRECT_URI="http://localhost:4000/api/customer/google/callback"
+```
 
-Remover um cadastro não apaga agendamentos históricos. Reservas preservam os nomes,
-preços e duração vigentes no momento da confirmação. Alterações no expediente não
-cancelam automaticamente reservas existentes. O painel impede criar bloqueios sobre
-reservas confirmadas: cancele a reserva primeiro e avise o cliente. A aplicação não
-envia mensagens automáticas de cancelamento.
+Use a porta e o domínio reais do ambiente. Em produção, use HTTPS. Na execução
+direta em Node na porta 3000, ajuste a URI para essa porta. Reinicie o servidor ou
+recrie o contêiner após alterar as variáveis. Sem as três configurações, o login
+Google fica indisponível e o cadastro local continua funcionando.
+
+A integração usa Authorization Code, PKCE e `state` associado ao navegador. O
+servidor consulta o perfil pelo Google e exige e-mail verificado. O usuário completa
+CPF e telefone antes de acessar horários. A conta Google confirma o controle da
+conta, não o CPF. Contas locais existentes não são vinculadas automaticamente por
+e-mail; nesse caso, o cliente deve entrar com a senha cadastrada.
+A integração foi testada com respostas Google simuladas; a validação com uma conta
+real depende das credenciais OAuth do ambiente.
+
+Referência: [OpenID Connect do Google](https://developers.google.com/identity/openid-connect/openid-connect).
+
+## Administradores, serviços e permissões
+
+O painel continua em `/painel`, sem link na área do cliente. O login agora pede
+**usuário e senha**. O usuário principal é **`root`**, mantendo a senha já existente
+no banco ou aquela configurada em `ADMIN_PASSWORD`. A migração é automática e
+transacional. Reservas antigas são preservadas no painel, mas não são atribuídas a
+novos clientes automaticamente.
+
+| Perfil | Permissões |
+| --- | --- |
+| ROOT | Gerencia equipe, serviços, produtos, expediente, todas as agendas e contas administrativas; edita e desativa outros administradores. |
+| Administrador cabeleireiro | Consulta e cancela reservas da própria agenda, cria/remove seus bloqueios, seleciona os serviços que executa e confirma seus pedidos presenciais. Não cadastra produtos, serviços, equipe ou administradores. |
+
+Contas administrativas são separadas do cadastro de profissionais. ROOT não possui
+vínculo com profissional e não aparece na agenda. Para habilitar um cabeleireiro:
+
+1. Cadastre o profissional na seção **Equipe**.
+2. Em **Administradores**, crie uma conta de perfil **Administrador cabeleireiro** e selecione o profissional.
+3. Em **Serviços por profissional**, marque serviços específicos ou **Executar todos os serviços**, que inclui automaticamente novos serviços cadastrados.
+
+O cabeleireiro também pode alterar a própria seleção em **Meus serviços**. As
+restrições são verificadas em todas as APIs, não apenas nos botões. Ao alterar uma
+conta administrativa, suas sessões anteriores são invalidadas. O ROOT principal
+não pode ser desativado ou rebaixado pela interface.
+
+Remover cadastros não apaga agendamentos históricos. Alterar o expediente não cancela
+reservas. Bloqueios respeitam tanto reservas quanto pedidos presenciais pendentes.
+Cancelamentos devem ser comunicados ao cliente; não há mensagens automáticas.
+
+### Verificação em duas etapas (OTP)
+
+Cada administrador ativa seu próprio OTP em **Segurança / OTP**, confirmando a senha,
+adicionando a chave em um autenticador TOTP e validando o código de seis dígitos.
+A chave pode ser inserida manualmente ou aberta pelo link `otpauth` em um dispositivo
+compatível. O cadastro não fica ativo até que o código seja verificado.
+
+Após ativar, o login exige uma segunda etapa; apenas a senha não cria sessão. Códigos
+já usados são recusados. São emitidos oito códigos de recuperação, mostrados uma
+única vez e armazenados somente como hashes; cada um permite um único acesso. Para
+desativar o OTP, são necessários a senha atual e um código válido do autenticador ou
+de recuperação. Alterar a senha, inclusive via `.env`, **não desativa o OTP**.
+
+Guarde os códigos de recuperação antes de sair. O banco contém CPFs, contatos e
+segredos TOTP necessários para validar códigos: restrinja acesso ao volume e aos
+backups. As sessões administrativas duram oito horas, as dos clientes até sete
+dias; ambas são encerradas quando o servidor reinicia. Use HTTPS e
+`COOKIE_SECURE=true` em produção. Há limites de tentativas no login e nas operações
+OTP. O algoritmo segue [RFC 6238](https://www.rfc-editor.org/rfc/rfc6238).
+
+## Marcar para agora (presencial)
+
+Em **Minha conta → Marcar para agora**, o cliente vê combinações de serviços e
+profissionais que podem iniciar o atendimento no momento. O profissional precisa
+ter uma conta administrativa de cabeleireiro ativa para receber pedidos.
+
+A solicitação bloqueia temporariamente o intervalo por até cinco minutos. O cliente
+acompanha o estado na própria conta, e o profissional recebe o pedido na seção
+**Presenciais**, atualizada a cada 15 segundos. Somente o profissional selecionado
+pode confirmar; o ROOT pode consultar ou recusar, mas não substituir essa
+confirmação presencial. Ao aceitar, o servidor verifica novamente a disponibilidade
+e cria o agendamento com início naquele momento. Pedidos recusados ou expirados
+liberam o intervalo. Cada cliente pode ter apenas um pedido pendente.
+
+O sistema não usa localização para provar presença física: a confirmação do
+profissional é a verificação presencial. Para aguardar a resposta, mantenha o painel
+ou a conta abertos; não há notificações push externas nesta versão.
 
 ## Organização
 
@@ -235,7 +314,9 @@ public/
       booking.js          Consulta de horários e confirmação da reserva
       store.js            Catálogo, busca e filtros
       cart.js             Carrinho e finalização via WhatsApp
-      admin.js            Login, agenda, cadastros e expediente
+      admin.js            Agenda, cadastros e expediente
+      admin-security.js   OTP, permissões, contas e pedidos presenciais
+      customer.js         Cadastro, login, perfil e reservas do cliente
       app.js              Inicialização da área do cliente
 server/
   index.js                Inicialização e encerramento do servidor
@@ -245,14 +326,24 @@ server/
   seed.json               Dados usados apenas na criação do banco
   booking.js              Disponibilidade e gravação transacional
   admin.js                Cadastros, expediente e bloqueios
-  auth.js                 Senha e sessões administrativas
+  auth.js                 Login administrativo, segunda etapa e configuração OTP
+  customers.js            Cadastro e sessão de clientes
+  identity.js             Validação de CPF, e-mail e telefone
+  google.js               Fluxo OAuth Google com PKCE e state
+  otp.js                  TOTP e códigos de recuperação
+  sessions.js             Cookies e sessões com expiração
+  permissions.js          Perfis ROOT/cabeleireiro e serviços por profissional
+  migrations.js           Migrações versionadas do banco
+  routes.js               APIs de clientes, administradores e agenda
+  walkins.js              Solicitações presenciais e confirmação
   validation.js           Validação dos dados recebidos
   password.js             Troca de senha pelo terminal
  test/app.test.js          Testes de integração com banco temporário
 ```
 
 O SQLite armazena `services`, `barbers`, `products`, `hours`, `appointments`, `blocks`
-e `settings`. Para ajustes cotidianos, use o painel; editar `seed.json` não sobrescreve
+, `settings`, `customers`, `administrators`, `barber_services`, `walkins` e
+`schema_migrations`. Para ajustes cotidianos, use o painel; editar `seed.json` não sobrescreve
 um banco existente. O número do WhatsApp fica na configuração `whatsapp` da tabela
 `settings`, inicialmente copiado de `seed.json`.
 
@@ -261,7 +352,7 @@ um banco existente. O número do WhatsApp fica na configuração `whatsapp` da t
 Para um backup simples, pare o servidor, copie a pasta do banco para um local seguro
 e depois reinicie. Preserve também arquivos `-wal` e `-shm`, caso existam. Para
 restaurar, pare o servidor e restaure a pasta completa no caminho de `DB_PATH`.
-O backup contém contatos de clientes e o hash da senha do painel.
+O backup contém contatos de clientes, CPFs, hashes de senha e segredos OTP.
 
 O antigo arquivo `data/barbearia.sqlite` dentro do projeto não é apagado nem
 transferido automaticamente para o novo caminho. Se ele já tiver dados, preserve-o

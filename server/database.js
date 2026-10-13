@@ -1,3 +1,4 @@
+import { migrate } from './migrations.js';
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -58,6 +59,7 @@ export function openDatabase(filename) {
         throw error;
       }
     }
+    migrate(db);
     return db;
   } catch (error) {
     db.close();

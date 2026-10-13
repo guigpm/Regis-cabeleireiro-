@@ -17,9 +17,23 @@ function status(message) {
   $('adminStatus').textContent = message;
 }
 function showLogin() {
+  adminUser = null;
+  resetAdminLogin();
+  administratorAccounts = [];
+  catalog = {
+    services: [],
+    barbers: [],
+    products: [],
+    hours: []
+  };
+  $('adminPassword').value = '';
+  for (const id of ['accountsContent', 'skillsContent', 'blocksList', 'panel-services', 'panel-barbers', 'panel-products']) $(id).replaceChildren();
+  $('securityContent').replaceChildren();
+  $('walkinsContent').replaceChildren();
   $('loginSection').hidden = false;
   $('adminContent').hidden = true;
   $('logoutButton').hidden = true;
+  agendaRequest++;
   $('agendaList').replaceChildren();
 }
 async function action(callback, button) {
@@ -36,8 +50,8 @@ async function action(callback, button) {
 }
 async function refreshCatalog() {
   catalog = await api('/api/admin/catalog');
-  for (const kind of Object.keys(labels)) renderCatalog(kind);
-  $('blockBarber').innerHTML = catalog.barbers.map(barber => `<option value="${barber.id}">${esc(barber.name)}</option>`).join('');
+  if (adminUser?.role === 'ROOT') for (const kind of Object.keys(labels)) renderCatalog(kind);
+  $('blockBarber').innerHTML = catalog.barbers.filter(barber => adminUser?.role === 'ROOT' || barber.id === adminUser?.barberId).map(barber => `<option value="${barber.id}">${esc(barber.name)}</option>`).join('');
   $('hoursRows').innerHTML = catalog.hours.map(day => `<div class="hours-row">
     <label><input type="checkbox" id="closed-${day.weekday}" ${day.closed ? 'checked' : ''}> ${days[day.weekday]} fechado</label>
     <label>Abertura<input type="time" class="form-control" id="opens-${day.weekday}" value="${clock(day.opens)}" required></label>
@@ -45,7 +59,13 @@ async function refreshCatalog() {
   </div>`).join('');
 }
 async function enterPanel() {
+  adminUser = (await api('/api/admin/session')).admin;
   await refreshCatalog();
+  applyPermissions();
+  renderSkills();
+  renderSecurity();
+  if (adminUser.role === 'ROOT') await loadAccounts();
+  await loadWalkins();
   $('loginSection').hidden = true;
   $('adminContent').hidden = false;
   $('logoutButton').hidden = false;
@@ -121,6 +141,8 @@ function saveRecord(event, kind) {
       body: data
     });
     await refreshCatalog();
+    renderSkills();
+    if (adminUser.role === 'ROOT') await loadAccounts();
     status('Cadastro salvo.');
   }, button);
 }
@@ -180,13 +202,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   $('loginForm').addEventListener('submit', event => {
     event.preventDefault();
     action(async () => {
-      await api('/api/admin/login', {
+      const result = await api('/api/admin/login', {
         method: 'POST',
         body: {
+          username: $('adminUsername').value,
           password: $('adminPassword').value
         }
       });
-      await enterPanel();
+      $('adminPassword').value = '';
+      if (result.otpRequired) {
+        otpChallenge = result.challenge;
+        $('loginForm').hidden = true;
+        $('otpLoginForm').hidden = false;
+        $('adminOtpCode').focus();
+      } else await enterPanel();
     }, event.submitter);
   });
   $('logoutButton').addEventListener('click', event => action(async () => {

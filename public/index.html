@@ -205,7 +205,8 @@
       </div>
      </div>
     </section>
-   </main>
+   <section id="tab-conta" class="tab"><div class="card" id="conta"><h2 class="section-title">Minha conta</h2><div id="accountContent">Carregando conta…</div></div></section>
+</main>
    <nav class="bottom-nav">
     <div class="nav-item active" data-tab="inicio" onclick="switchTab('inicio')">
      <i class="fa-solid fa-house">
@@ -228,7 +229,7 @@
       Loja
      </span>
     </div>
-   </nav>
+   <button class="nav-item nav-account" data-tab="conta" onclick="switchTab('conta')">Minha conta</button></nav>
   </div>
   <div class="modal" id="cartModal" onclick="if(event.target===this)closeModal('cartModal')">
    <div class="modal-card">
@@ -267,7 +268,8 @@
   </script>
   <script defer="" src="/assets/js/ui.js">
   </script>
-  <script defer="" src="/assets/js/booking.js">
+  <script defer="" src="/assets/js/customer.js"></script>
+<script defer="" src="/assets/js/booking.js">
   </script>
   <script defer="" src="/assets/js/store.js">
   </script>

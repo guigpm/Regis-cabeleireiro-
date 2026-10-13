@@ -830,3 +830,16 @@ button:disabled { opacity: .55; cursor: wait; }
 .admin-status { min-height: 24px; font-size: .85rem; color: var(--gold2); }
 .admin-photo { width: 55px; height: 55px; object-fit: cover; border-radius: 8px; }
 @media (max-width: 480px) { .admin-app { padding: 12px; } .hours-row { grid-template-columns: 1fr 1fr; } .hours-row > label:first-child { grid-column: 1 / -1; } }
+
+/* Conta do cliente, agenda e segurança. */
+.nav-account { background: none; border: 0; justify-content: center; }
+.account-register { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line); }
+.account-register summary { cursor: pointer; color: var(--gold2); }
+.slot-available { border-color: #45cf8580; background: #45cf8515; }
+.slot-occupied:disabled { border-color: #ff6b6b80; color: #ffb0b0; background: #ff6b6b12; opacity: 1; cursor: not-allowed; }
+.slot-past:disabled { cursor: not-allowed; }
+.time-btn .service-duration { font-size: .65rem; margin-top: 4px; }
+.service-choices { display: grid; gap: 12px; padding: 20px 0; }
+.service-choices label { font-size: .85rem; }
+.secret-code { white-space: pre-wrap; overflow-wrap: anywhere; user-select: all; padding: 12px; border: 1px solid var(--line); border-radius: 8px; }
+#nowContent { margin-top: 20px; }
