@@ -10,7 +10,8 @@ export function googleLogin(customers, options = {}) {
   const pending = new Map(),
     secure = options.secure;
   const request = options.fetch || fetch;
-  const cookie = (state, age) => `rr_google_state=${state}; HttpOnly; SameSite=Lax; Path=/api/customer/google; Max-Age=${age}${secure ? '; Secure' : ''}`;
+  const cookie = (state, age) =>
+    `rr_google_state=${state}; HttpOnly; SameSite=Lax; Path=/api/customer/google; Max-Age=${age}${secure ? '; Secure' : ''}`;
   function prune() {
     for (const [key, entry] of pending) if (entry.expires < Date.now()) pending.delete(key);
   }
@@ -45,9 +46,15 @@ export function googleLogin(customers, options = {}) {
       check(enabled, 'Login Google não configurado.', 503);
       prune();
       const state = query.get('state');
-      const browserState = /(?:^|;\s*)rr_google_state=([a-f0-9]{64})(?:;|$)/.exec(req.headers.cookie || '')?.[1];
+      const browserState = /(?:^|;\s*)rr_google_state=([a-f0-9]{64})(?:;|$)/.exec(
+        req.headers.cookie || ''
+      )?.[1];
       const entry = pending.get(state);
-      check(state && state === browserState && entry, 'Login Google expirado. Tente novamente.', 401);
+      check(
+        state && state === browserState && entry,
+        'Login Google expirado. Tente novamente.',
+        401
+      );
       pending.delete(state);
       check(!query.has('error') && query.get('code'), 'Login Google cancelado.', 400);
       const tokenResponse = await request('https://oauth2.googleapis.com/token', {

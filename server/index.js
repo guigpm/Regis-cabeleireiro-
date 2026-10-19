@@ -13,12 +13,14 @@ try {
 const server = createApp(db, {
   password: process.env.ADMIN_PASSWORD,
   secure: process.env.COOKIE_SECURE === 'true',
-  onInitialPassword: password => console.log(`Senha inicial do painel (guarde-a): ${password}`)
+  onInitialPassword: (password) => console.log(`Senha inicial do painel (guarde-a): ${password}`)
 });
 const host = process.env.HOST || '127.0.0.1',
   port = Number(process.env.PORT || 3000);
 server.listen(port, host, () => {
-  console.log(`Clientes: http://${host}:${port}/\nPainel: http://${host}:${port}/painel\nBanco: ${filename}`);
+  console.log(
+    `Clientes: http://${host}:${port}/\nPainel: http://${host}:${port}/painel\nBanco: ${filename}`
+  );
 });
 function shutdown() {
   server.close(() => {

@@ -1,0 +1,6 @@
+node_modules/
+backups/
+.env
+*.sqlite*
+server/seed.json
+package-lock.json

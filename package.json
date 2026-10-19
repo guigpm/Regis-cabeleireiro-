@@ -3,11 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=24.0.0" },
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "start": "node --env-file-if-exists=.env server/index.js",
     "dev": "node --env-file-if-exists=.env --watch server/index.js",
     "test": "node --test",
-    "admin:password": "node --env-file-if-exists=.env server/password.js"
+    "admin:password": "node --env-file-if-exists=.env server/password.js",
+    "format": "prettier --write \"server/**/*.js\" \"public/**/*.{js,html,css}\" \"test/**/*.js\" \"docs/*.md\" README.md",
+    "format:check": "prettier --check \"server/**/*.js\" \"public/**/*.{js,html,css}\" \"test/**/*.js\" \"docs/*.md\" README.md"
+  },
+  "devDependencies": {
+    "prettier": "3.9.10"
   }
 }

@@ -8,7 +8,9 @@ const terminal = createInterface({
 });
 let db;
 try {
-  const password = await terminal.question('Nova senha do painel (12–200 caracteres; entrada visível neste terminal): ');
+  const password = await terminal.question(
+    'Nova senha do painel (12–200 caracteres; entrada visível neste terminal): '
+  );
   const confirmation = await terminal.question('Repita a senha: ');
   if (password !== confirmation) throw new Error('As senhas não coincidem.');
   db = openDatabase(databasePath());

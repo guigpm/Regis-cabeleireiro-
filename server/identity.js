@@ -6,7 +6,7 @@ export function cpf(value) {
   for (let length = 9; length <= 10; length++) {
     let sum = 0;
     for (let i = 0; i < length; i++) sum += Number(digits[i]) * (length + 1 - i);
-    const digit = sum * 10 % 11 % 10;
+    const digit = ((sum * 10) % 11) % 10;
     check(digit === Number(digits[length]), 'CPF inválido.');
   }
   return digits;

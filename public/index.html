@@ -1,281 +1,221 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-  <meta content="#08090b" name="theme-color"/>
-  <title>
-   R&amp;R Barbearia | Agendamento e Loja
-  </title>
-  <link href="/assets/images/logo.jpg" rel="icon" type="image/x-icon"/>
-  <link href="https://fonts.googleapis.com" rel="preconnect"/>
-  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
-  <link href="/assets/css/styles.css" rel="stylesheet"/>
- </head>
- <body>
-  <div class="bg-image">
-  </div>
-  <div class="bg-overlay">
-  </div>
-  <div class="app">
-   <header>
-    <div class="brand">
-     <img alt="Logo R&amp;R" src="/assets/images/logo.jpg"/>
-     <div>
-      <div class="brand-title">
-       R&amp;R BARBEARIA
-      </div>
-      <div class="brand-sub">
-       Cortes &amp; barba
-      </div>
-     </div>
-    </div>
-    <button aria-label="Carrinho" class="icon-btn" onclick="openCart()">
-     <i class="fa-solid fa-bag-shopping">
-     </i>
-     <span class="cart-count" id="cartBadge">
-      0
-     </span>
-    </button>
-   </header>
-   <main>
-    <section class="tab active" id="tab-inicio">
-     <div class="hero">
-      <img alt="Logo R&amp;R Barbearia" class="hero-logo" src="/assets/images/logo.jpg"/>
-      <h1>
-       R&amp;R BARBEARIA
-      </h1>
-      <p>
-       Estilo • Precisão • Personalidade
-      </p>
-      <div class="online">
-       <i class="fa-solid fa-circle">
-       </i>
-       Agende seu horário
-      </div>
-     </div>
-     <div class="quick-links">
-      <a class="quick" href="#agendamento" onclick="goToBooking()">
-       <i class="fa-solid fa-scissors">
-       </i>
-       Agendar
-      </a>
-      <a class="quick" href="#" onclick="switchTab('loja');return false">
-       <i class="fa-solid fa-bag-shopping">
-       </i>
-       Produtos
-      </a>
-      <a class="quick" href="#localizacao" onclick="document.getElementById('localizacao').scrollIntoView({behavior:'smooth'});return false">
-       <i class="fa-solid fa-location-dot">
-       </i>
-       Como chegar
-      </a>
-     </div>
-     <div class="card" id="localizacao">
-      <h2 class="section-title">
-       <i class="fa-solid fa-location-dot">
-       </i>
-       Nossa localização
-      </h2>
-      <p class="small muted">
-       Avenida Mascarenhas de Moraes, 1229
-      </p>
-      <div class="map-box">
-       <iframe loading="lazy" src="https://www.google.com/maps?q=Avenida+Mascarenhas+de+Moraes+1229&amp;output=embed" title="Mapa da barbearia">
-       </iframe>
-      </div>
-      <div class="two-col">
-       <a class="btn btn-outline" href="https://waze.com/ul?q=Avenida%20Mascarenhas%20de%20Moraes%201229" rel="noopener" target="_blank">
-        <i class="fa-brands fa-waze">
-        </i>
-        Waze
-       </a>
-       <a class="btn btn-outline" href="https://maps.google.com/?q=Avenida%20Mascarenhas%20de%20Moraes%201229" rel="noopener" target="_blank">
-        <i class="fa-solid fa-map">
-        </i>
-        Google Maps
-       </a>
-      </div>
-     </div>
-     <div class="card">
-      <h2 class="section-title">
-       <i class="fa-regular fa-clock">
-       </i>
-       Horário de atendimento
-      </h2>
-      <div class="hours" id="businessHours">
-       <div class="row-between">
-        <span class="muted">
-         Segunda a sexta
-        </span>
-        <strong>
-         09:00 – 20:00
-        </strong>
-       </div>
-       <div class="row-between">
-        <span class="muted">
-         Sábado
-        </span>
-        <strong>
-         09:00 – 18:00
-        </strong>
-       </div>
-       <div class="row-between">
-        <span class="muted">
-         Domingo
-        </span>
-        <strong class="text-danger">
-         Fechado
-        </strong>
-       </div>
-      </div>
-     </div>
-     <div class="card" id="agendamento">
-      <h2 class="section-title">
-       <i class="fa-solid fa-calendar-check">
-       </i>
-       Agendar horário
-      </h2>
-      <div class="steps">
-       <div class="step active" id="dot1">
-        <div class="step-circle">
-         1
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport" />
+    <meta content="#08090b" name="theme-color" />
+    <title>R&amp;R Barbearia | Agendamento e Loja</title>
+    <link href="/assets/images/logo.jpg" rel="icon" type="image/x-icon" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link href="/assets/css/styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+    <div class="app">
+      <header>
+        <div class="brand">
+          <img alt="Logo R&amp;R" src="/assets/images/logo.jpg" />
+          <div>
+            <div class="brand-title">R&amp;R BARBEARIA</div>
+            <div class="brand-sub">Cortes &amp; barba</div>
+          </div>
         </div>
-        <div class="step-label">
-         Serviço
-        </div>
-       </div>
-       <div class="step" id="dot2">
-        <div class="step-circle">
-         2
-        </div>
-        <div class="step-label">
-         Barbeiro
-        </div>
-       </div>
-       <div class="step" id="dot3">
-        <div class="step-circle">
-         3
-        </div>
-        <div class="step-label">
-         Data
-        </div>
-       </div>
-       <div class="step" id="dot4">
-        <div class="step-circle">
-         4
-        </div>
-        <div class="step-label">
-         Pagamento
-        </div>
-       </div>
-      </div>
-      <div id="bookingContent">
-       Carregando serviços…
-      </div>
-     </div>
-    </section>
-    <section class="tab" id="tab-loja">
-     <div class="card">
-      <h2 class="section-title">
-       <i class="fa-solid fa-store">
-       </i>
-       Loja de produtos
-      </h2>
-      <div class="store-controls">
-       <input class="no-margin form-control" id="storeSearch" oninput="renderProducts()" placeholder="Buscar produto..."/>
-       <div class="pills">
-        <button class="pill active" onclick="filterCategory('Todos',this)">
-         Todos
+        <button aria-label="Carrinho" class="icon-btn" data-event-click="openCartAction">
+          <i class="fa-solid fa-bag-shopping"> </i>
+          <span class="cart-count" id="cartBadge"> 0 </span>
         </button>
-        <button class="pill" onclick="filterCategory('Cabelo',this)">
-         Cabelo
+      </header>
+      <main>
+        <section class="tab active" id="tab-inicio">
+          <div class="hero">
+            <img alt="Logo R&amp;R Barbearia" class="hero-logo" src="/assets/images/logo.jpg" />
+            <h1>R&amp;R BARBEARIA</h1>
+            <p>Estilo • Precisão • Personalidade</p>
+            <div class="online">
+              <i class="fa-solid fa-circle"> </i>
+              Agende seu horário
+            </div>
+          </div>
+          <div class="quick-links">
+            <a class="quick" href="#agendamento" data-event-click="goToBookingAction">
+              <i class="fa-solid fa-scissors"> </i>
+              Agendar
+            </a>
+            <a class="quick" href="#" data-event-click="openStoreLink">
+              <i class="fa-solid fa-bag-shopping"> </i>
+              Produtos
+            </a>
+            <a class="quick" href="#localizacao" data-event-click="showLocation">
+              <i class="fa-solid fa-location-dot"> </i>
+              Como chegar
+            </a>
+          </div>
+          <div class="card" id="localizacao">
+            <h2 class="section-title">
+              <i class="fa-solid fa-location-dot"> </i>
+              Nossa localização
+            </h2>
+            <p class="small muted">Avenida Mascarenhas de Moraes, 1229</p>
+            <div class="map-box">
+              <iframe
+                loading="lazy"
+                src="https://www.google.com/maps?q=Avenida+Mascarenhas+de+Moraes+1229&amp;output=embed"
+                title="Mapa da barbearia"
+              >
+              </iframe>
+            </div>
+            <div class="two-col">
+              <a
+                class="btn btn-outline"
+                href="https://waze.com/ul?q=Avenida%20Mascarenhas%20de%20Moraes%201229"
+                rel="noopener"
+                target="_blank"
+              >
+                <i class="fa-brands fa-waze"> </i>
+                Waze
+              </a>
+              <a
+                class="btn btn-outline"
+                href="https://maps.google.com/?q=Avenida%20Mascarenhas%20de%20Moraes%201229"
+                rel="noopener"
+                target="_blank"
+              >
+                <i class="fa-solid fa-map"> </i>
+                Google Maps
+              </a>
+            </div>
+          </div>
+          <div class="card">
+            <h2 class="section-title">
+              <i class="fa-regular fa-clock"> </i>
+              Horário de atendimento
+            </h2>
+            <div class="hours" id="businessHours">
+              <div class="row-between">
+                <span class="muted"> Segunda a sexta </span>
+                <strong> 09:00 – 20:00 </strong>
+              </div>
+              <div class="row-between">
+                <span class="muted"> Sábado </span>
+                <strong> 09:00 – 18:00 </strong>
+              </div>
+              <div class="row-between">
+                <span class="muted"> Domingo </span>
+                <strong class="text-danger"> Fechado </strong>
+              </div>
+            </div>
+          </div>
+          <div class="card" id="agendamento">
+            <h2 class="section-title">
+              <i class="fa-solid fa-calendar-check"> </i>
+              Agendar horário
+            </h2>
+            <div class="steps">
+              <div class="step active" id="dot1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Serviço</div>
+              </div>
+              <div class="step" id="dot2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Barbeiro</div>
+              </div>
+              <div class="step" id="dot3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Data</div>
+              </div>
+              <div class="step" id="dot4">
+                <div class="step-circle">4</div>
+                <div class="step-label">Pagamento</div>
+              </div>
+            </div>
+            <div id="bookingContent">Carregando serviços…</div>
+          </div>
+        </section>
+        <section class="tab" id="tab-loja">
+          <div class="card">
+            <h2 class="section-title">
+              <i class="fa-solid fa-store"> </i>
+              Loja de produtos
+            </h2>
+            <div class="store-controls">
+              <input
+                class="no-margin form-control"
+                id="storeSearch"
+                data-event-input="renderProductsAction"
+                placeholder="Buscar produto..."
+              />
+              <div class="pills">
+                <button class="pill active" data-event-click="filterAllProducts">Todos</button>
+                <button class="pill" data-event-click="filterHairProducts">Cabelo</button>
+                <button class="pill" data-event-click="filterBeardProducts">Barba</button>
+                <button class="pill" data-event-click="filterFinishProducts">Acabamento</button>
+              </div>
+            </div>
+            <div class="products-grid" id="productsGrid"></div>
+          </div>
+        </section>
+        <section id="tab-conta" class="tab">
+          <div class="card" id="conta">
+            <h2 class="section-title">Minha conta</h2>
+            <div id="accountContent">Carregando conta…</div>
+          </div>
+        </section>
+      </main>
+      <nav class="bottom-nav">
+        <div class="nav-item active" data-tab="inicio" data-event-click="openHome">
+          <i class="fa-solid fa-house"> </i>
+          <span> Início </span>
+        </div>
+        <div class="nav-item" data-tab="inicio" data-event-click="openBooking">
+          <i class="fa-regular fa-calendar-check"> </i>
+          <span> Agendar </span>
+        </div>
+        <div class="nav-item" data-tab="loja" data-event-click="openStore">
+          <i class="fa-solid fa-bag-shopping"> </i>
+          <span> Loja </span>
+        </div>
+        <button class="nav-item nav-account" data-tab="conta" data-event-click="openAccount">
+          Minha conta
         </button>
-        <button class="pill" onclick="filterCategory('Barba',this)">
-         Barba
+      </nav>
+    </div>
+    <div class="modal" id="cartModal" data-event-click="closeCartBackdrop">
+      <div class="modal-card">
+        <div class="modal-head">
+          <div class="modal-title">Seu carrinho</div>
+          <button class="close" data-event-click="closeModalAction">×</button>
+        </div>
+        <div id="cartItems"></div>
+        <div class="cart-total row-between">
+          <span> Total </span>
+          <span class="price" id="cartTotal"> R$ 0,00 </span>
+        </div>
+        <button class="btn btn-gold full" data-event-click="checkoutCartAction">
+          <i class="fa-brands fa-whatsapp"> </i>
+          Finalizar no WhatsApp
         </button>
-        <button class="pill" onclick="filterCategory('Acabamento',this)">
-         Acabamento
-        </button>
-       </div>
       </div>
-      <div class="products-grid" id="productsGrid">
-      </div>
-     </div>
-    </section>
-   <section id="tab-conta" class="tab"><div class="card" id="conta"><h2 class="section-title">Minha conta</h2><div id="accountContent">Carregando conta…</div></div></section>
-</main>
-   <nav class="bottom-nav">
-    <div class="nav-item active" data-tab="inicio" onclick="switchTab('inicio')">
-     <i class="fa-solid fa-house">
-     </i>
-     <span>
-      Início
-     </span>
     </div>
-    <div class="nav-item" data-tab="inicio" onclick="switchTab('inicio');goToBooking()">
-     <i class="fa-regular fa-calendar-check">
-     </i>
-     <span>
-      Agendar
-     </span>
-    </div>
-    <div class="nav-item" data-tab="loja" onclick="switchTab('loja')">
-     <i class="fa-solid fa-bag-shopping">
-     </i>
-     <span>
-      Loja
-     </span>
-    </div>
-   <button class="nav-item nav-account" data-tab="conta" onclick="switchTab('conta')">Minha conta</button></nav>
-  </div>
-  <div class="modal" id="cartModal" onclick="if(event.target===this)closeModal('cartModal')">
-   <div class="modal-card">
-    <div class="modal-head">
-     <div class="modal-title">
-      Seu carrinho
-     </div>
-     <button class="close" onclick="closeModal('cartModal')">
-      ×
-     </button>
-    </div>
-    <div id="cartItems">
-    </div>
-    <div class="cart-total row-between">
-     <span>
-      Total
-     </span>
-     <span class="price" id="cartTotal">
-      R$ 0,00
-     </span>
-    </div>
-    <button class="btn btn-gold full" onclick="checkoutCart()">
-     <i class="fa-brands fa-whatsapp">
-     </i>
-     Finalizar no WhatsApp
-    </button>
-   </div>
-  </div>
-  <div class="toast" id="toast" role="status">
-  </div>
-  <script defer="" src="/assets/js/config.js">
-  </script>
-  <script defer="" src="/assets/js/utils.js">
-  </script>
-  <script defer="" src="/assets/js/state.js">
-  </script>
-  <script defer="" src="/assets/js/ui.js">
-  </script>
-  <script defer="" src="/assets/js/customer.js"></script>
-<script defer="" src="/assets/js/booking.js">
-  </script>
-  <script defer="" src="/assets/js/store.js">
-  </script>
-  <script defer="" src="/assets/js/cart.js">
-  </script>
-  <script defer="" src="/assets/js/app.js">
-  </script>
- </body>
+    <div class="toast" id="toast" role="status"></div>
+    <script defer="" src="/assets/js/config.js"></script>
+    <script defer="" src="/assets/js/utils.js"></script>
+    <script defer src="/assets/js/events.js"></script>
+    <script defer="" src="/assets/js/state.js"></script>
+    <script defer="" src="/assets/js/ui.js"></script>
+    <script defer="" src="/assets/js/customer.js"></script>
+    <script defer="" src="/assets/js/booking.js"></script>
+    <script defer="" src="/assets/js/store.js"></script>
+    <script defer="" src="/assets/js/cart.js"></script>
+    <script defer="" src="/assets/js/app.js"></script>
+  </body>
 </html>

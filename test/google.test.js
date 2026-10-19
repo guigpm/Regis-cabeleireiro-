@@ -34,22 +34,28 @@ test('Google: state vinculado ao navegador, PKCE, cadastro incompleto e proteÃ§Ã
       });
       return {
         ok: true,
-        json: async () => url.includes('/token') ? {
-          access_token: 'test-access'
-        } : {
-          sub: 'google-user-123',
-          email: 'google@example.test',
-          email_verified: true,
-          name: 'Google Test'
-        }
+        json: async () =>
+          url.includes('/token')
+            ? {
+                access_token: 'test-access'
+              }
+            : {
+                sub: 'google-user-123',
+                email: 'google@example.test',
+                email_verified: true,
+                name: 'Google Test'
+              }
       };
     }
   });
   try {
     const start = response();
-    google.start({
-      headers: {}
-    }, start);
+    google.start(
+      {
+        headers: {}
+      },
+      start
+    );
     const url = new URL(start.headers.Location),
       state = url.searchParams.get('state');
     assert.equal(url.searchParams.get('code_challenge_method'), 'S256');
@@ -57,18 +63,30 @@ test('Google: state vinculado ao navegador, PKCE, cadastro incompleto e proteÃ§Ã
       state,
       code: 'test-code'
     });
-    await assert.rejects(() => google.callback({
-      headers: {}
-    }, response(), params), {
-      status: 401
-    });
+    await assert.rejects(
+      () =>
+        google.callback(
+          {
+            headers: {}
+          },
+          response(),
+          params
+        ),
+      {
+        status: 401
+      }
+    );
     assert.equal(requests.length, 0);
     const end = response();
-    await google.callback({
-      headers: {
-        cookie: `rr_google_state=${state}`
-      }
-    }, end, params);
+    await google.callback(
+      {
+        headers: {
+          cookie: `rr_google_state=${state}`
+        }
+      },
+      end,
+      params
+    );
     assert.equal(end.status, 302);
     assert.ok(requests[0].options.body.get('code_verifier'));
     const clientCookie = end.headers['Set-Cookie'][0].split(';')[0],
@@ -81,13 +99,21 @@ test('Google: state vinculado ao navegador, PKCE, cadastro incompleto e proteÃ§Ã
     assert.throws(() => customers.current(req, true), {
       status: 403
     });
-    await assert.rejects(() => google.callback({
-      headers: {
-        cookie: `rr_google_state=${state}`
+    await assert.rejects(
+      () =>
+        google.callback(
+          {
+            headers: {
+              cookie: `rr_google_state=${state}`
+            }
+          },
+          response(),
+          params
+        ),
+      {
+        status: 401
       }
-    }, response(), params), {
-      status: 401
-    });
+    );
     const completed = customers.complete(req, {
       name: 'Google Test',
       cpf: '52998224725',
@@ -95,26 +121,42 @@ test('Google: state vinculado ao navegador, PKCE, cadastro incompleto e proteÃ§Ã
     });
     assert.equal(completed.customer.complete, true);
     assert.ok(customers.current(req, true));
-    assert.throws(() => customers.google({
-      sub: 'another-sub',
-      email: 'google@example.test',
-      email_verified: true,
-      name: 'Other'
-    }, response(), {
-      headers: {}
-    }), {
-      status: 409
-    });
-    assert.throws(() => customers.google({
-      sub: 'unverified',
-      email: 'other@example.test',
-      email_verified: false,
-      name: 'Other'
-    }, response(), {
-      headers: {}
-    }), {
-      status: 401
-    });
+    assert.throws(
+      () =>
+        customers.google(
+          {
+            sub: 'another-sub',
+            email: 'google@example.test',
+            email_verified: true,
+            name: 'Other'
+          },
+          response(),
+          {
+            headers: {}
+          }
+        ),
+      {
+        status: 409
+      }
+    );
+    assert.throws(
+      () =>
+        customers.google(
+          {
+            sub: 'unverified',
+            email: 'other@example.test',
+            email_verified: false,
+            name: 'Other'
+          },
+          response(),
+          {
+            headers: {}
+          }
+        ),
+      {
+        status: 401
+      }
+    );
   } finally {
     db.close();
   }

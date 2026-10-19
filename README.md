@@ -238,9 +238,9 @@ no banco ou aquela configurada em `ADMIN_PASSWORD`. A migração é automática 
 transacional. Reservas antigas são preservadas no painel, mas não são atribuídas a
 novos clientes automaticamente.
 
-| Perfil | Permissões |
-| --- | --- |
-| ROOT | Gerencia equipe, serviços, produtos, expediente, todas as agendas e contas administrativas; edita e desativa outros administradores. |
+| Perfil                     | Permissões                                                                                                                                                                                                    |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ROOT                       | Gerencia equipe, serviços, produtos, expediente, todas as agendas e contas administrativas; edita e desativa outros administradores.                                                                          |
 | Administrador cabeleireiro | Consulta e cancela reservas da própria agenda, cria/remove seus bloqueios, seleciona os serviços que executa e confirma seus pedidos presenciais. Não cadastra produtos, serviços, equipe ou administradores. |
 
 Contas administrativas são separadas do cadastro de profissionais. ROOT não possui
@@ -334,7 +334,10 @@ server/
   sessions.js             Cookies e sessões com expiração
   permissions.js          Perfis ROOT/cabeleireiro e serviços por profissional
   migrations.js           Migrações versionadas do banco
-  routes.js               APIs de clientes, administradores e agenda
+  routes.js               Entrada do roteador; delega aos controllers
+  controllers/            Adaptadores HTTP de autenticação e operações
+  models/                 Regras e consultas de catálogo, agenda e finanças
+  security.js             CSRF e política de segurança de conteúdo
   walkins.js              Solicitações presenciais e confirmação
   validation.js           Validação dos dados recebidos
   password.js             Troca de senha pelo terminal
@@ -377,3 +380,59 @@ necessitam de internet.
 
 Referências técnicas: [SQLite em aplicações web](https://www.sqlite.org/whentouse.html)
 e [SQLite nativo do Node.js](https://nodejs.org/download/release/latest-v24.x/docs/api/sqlite.html).
+
+## Agenda individual, atendimentos e rendimentos
+
+No painel, **Meu expediente** permite alterar a semana e criar exceções por data.
+**Agenda** oferece pausas e bloqueios de dia inteiro. Restrições criadas pelo ROOT
+não podem ser removidas pelo cabeleireiro; o ROOT pode liberar a partir de um horário.
+Reservas existentes são preservadas e o painel informa conflitos ao aplicar restrições.
+
+Em **Histórico completo**, consulte qualquer período e altere atendimentos de
+agendado para em andamento e concluído. A conclusão exige pagamento e, nos cartões,
+bandeira. O cliente só pode cancelar reservas futuras ainda não iniciadas.
+**Vender produtos** registra venda avulsa ou pergunta se deve vinculá-la ao atendimento
+em andamento. Produtos vinculados são recebidos junto com o serviço.
+
+**Rendimentos e vendas** mostra dia, semana, mês ou período livre, separando serviços,
+produtos, pagamento e bandeira. ROOT escolhe profissional ou total geral; cabeleireiro
+vê apenas seus registros. Comissão padrão: **45%**, ajustável pelo ROOT nessa área.
+Valores concluídos são preservados quando o preço ou a comissão mudar.
+O campo **Estoque disponível** no cadastro de produto habilita a baixa transacional;
+vazio significa que o estoque ainda não é controlado para esse produto.
+
+Detalhes de manutenção: [arquitetura MVC](docs/ARCHITECTURE.md).
+Integração de aplicativo: [contrato HTTP da API](docs/API.md).
+
+## Segurança e publicação
+
+As permissões são verificadas no backend, independentemente da interface. Alterações
+exigem token CSRF. CSP bloqueia scripts e eventos inline; HTML dinâmico escapa dados.
+Senhas novas usam scrypt com parâmetros reforçados, hashes antigos são atualizados
+no login. OTP permanece ativo em trocas de senha. Sessões administrativas expiram
+em até 8 horas e após 30 minutos sem requisições; reinícios invalidam sessões.
+
+Para publicar, coloque um proxy HTTPS na frente e configure no `.env`:
+
+```dotenv
+PUBLIC_ORIGIN=https://barbearia.seu-dominio.com
+COOKIE_SECURE=true
+REQUIRE_HTTPS=true
+DOCKER_BIND_IP=127.0.0.1
+```
+
+`REQUIRE_HTTPS=true` impede inicialização sem origem HTTPS e cookies seguros. O proxy
+deve encaminhar apenas o domínio configurado e limitar requisições. Não exponha a
+porta HTTP diretamente na internet. Para desenvolvimento local HTTP, mantenha essas
+opções desativadas. Não existe garantia de segurança absoluta; proteja também o
+host, o `.env`, o volume SQLite e os backups. Ative OTP nas contas administrativas.
+
+A migração 2 é automática e preserva registros existentes. Faça backup do banco
+antes de atualizar. Use os comandos Docker já documentados acima; nunca use
+`down -v` para atualizar, pois remove dados. Na versão antiga de Compose, remova
+somente os contêineres com `docker-compose down` antes de `docker-compose up -d --build`
+se ocorrer o erro `ContainerConfig`.
+
+As notificações de próximos atendimentos são opcionais, com consentimento, e funcionam
+com o painel aberto em navegador compatível. Não há push com o site fechado.
+Não há cobrança online: o sistema registra pagamentos informados pelo operador.

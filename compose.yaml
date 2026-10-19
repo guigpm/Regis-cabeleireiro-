@@ -17,6 +17,8 @@ services:
       # Ignora o DB_PATH usado pelo npm start no host: o banco fica no volume.
       DB_PATH: /data/barbearia.sqlite
       ADMIN_PASSWORD: "${ADMIN_PASSWORD:-}"
+      PUBLIC_ORIGIN: "${PUBLIC_ORIGIN:-}"
+      REQUIRE_HTTPS: "${REQUIRE_HTTPS:-false}"
       COOKIE_SECURE: "${COOKIE_SECURE:-false}"
       GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID:-}"
       GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET:-}"

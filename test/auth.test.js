@@ -29,10 +29,17 @@ test('senha do ambiente atualiza um banco existente ao reiniciar', () => {
       });
       assert.doesNotThrow(() => unchanged.login('senha-atualizada-456', response));
     }
-    assert.throws(() => createAuth(db, {
-      password: 'curta'
-    }), /12 e 200/);
-    assert.equal(db.prepare("SELECT value FROM settings WHERE key='admin_password'").get().value, stored);
+    assert.throws(
+      () =>
+        createAuth(db, {
+          password: 'curta'
+        }),
+      /12 e 200/
+    );
+    assert.equal(
+      db.prepare("SELECT value FROM settings WHERE key='admin_password'").get().value,
+      stored
+    );
   } finally {
     db.close();
   }
@@ -64,7 +71,9 @@ test('trocar senha do ROOT não desativa a segunda etapa', () => {
     createAuth(db, {
       password: 'senha-inicial-123'
     });
-    db.prepare("UPDATE administrators SET otp_secret='GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ' WHERE username='root'").run();
+    db.prepare(
+      "UPDATE administrators SET otp_secret='GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ' WHERE username='root'"
+    ).run();
     const auth = createAuth(db, {
       password: 'senha-atualizada-456'
     });
@@ -77,4 +86,19 @@ test('trocar senha do ROOT não desativa a segunda etapa', () => {
   } finally {
     db.close();
   }
+});
+
+test('hashes novos reforçados aceitam verificação e rejeitam hashes corrompidos', async () => {
+  const { passwordHash, passwordMatches } = await import('../server/auth.js');
+  const { scryptSync } = await import('node:crypto');
+  const password = 'legacy-password-12345',
+    salt = 'a'.repeat(32);
+  const legacy = salt + ':' + scryptSync(password, salt, 64).toString('hex');
+  assert.equal(passwordMatches(password, legacy), true);
+  const modern = passwordHash(password);
+  assert.ok(modern.startsWith('scrypt-v2:'));
+  assert.equal(passwordMatches(password, modern), true);
+  assert.equal(passwordMatches('wrong', modern), false);
+  assert.equal(passwordMatches(password, 'corrupted'), false);
+  assert.equal(passwordMatches(password, null), false);
 });

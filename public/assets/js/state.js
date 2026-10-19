@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 // Catálogo e disponibilidade vêm do servidor; o carrinho é temporário.
 let services = [],

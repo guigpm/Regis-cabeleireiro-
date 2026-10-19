@@ -1,78 +1,325 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
-  <meta name="theme-color" content="#08090b">
-  <title>Painel | R&R Barbearia</title>
-  <link href="/assets/images/logo.jpg" rel="icon" type="image/x-icon"/>
-  <link rel="stylesheet" href="/assets/css/styles.css">
-  <script src="/assets/js/config.js" defer></script>
-  <script src="/assets/js/utils.js" defer></script>
-  <script src="/assets/js/admin-security.js" defer></script>
-  <script src="/assets/js/admin.js" defer></script>
-</head>
-<body>
-  <main class="admin-app">
-    <div class="admin-header"><h1>R&R · Administração</h1><button id="logoutButton" class="btn btn-outline" hidden>Sair</button></div>
-    <p id="adminStatus" class="admin-status" role="status" aria-live="polite"></p>
-    <section id="loginSection" class="card admin-login">
-      <h2 class="section-title">Acesso ao painel</h2>
-      <form id="loginForm">
-        <label for="adminUsername" class="small">Usuário</label><input id="adminUsername" class="form-control" autocomplete="username" required value="root">
-        <label for="adminPassword" class="small">Senha</label>
-        <input id="adminPassword" class="form-control" type="password" autocomplete="current-password" required maxlength="200">
-        <button class="btn btn-gold full" type="submit">Entrar</button>
-      </form>
-      <form id="otpLoginForm" hidden><label for="adminOtpCode" class="small">Código do autenticador ou código de recuperação</label><input id="adminOtpCode" class="form-control" autocomplete="one-time-code" required maxlength="20"><button class="btn btn-gold full" type="submit">Verificar e entrar</button><button class="btn btn-muted full" type="button" onclick="resetAdminLogin()">Voltar ao login</button></form>
-    </section>
-    <section id="adminContent" hidden>
-      <nav class="admin-tabs" aria-label="Seções do painel">
-        <button class="btn btn-gold" data-section="agenda">Agenda</button>
-        <button class="btn btn-outline" data-section="services">Serviços</button>
-        <button class="btn btn-outline" data-section="barbers">Equipe</button>
-        <button class="btn btn-outline" data-section="products">Produtos</button>
-        <button class="btn btn-outline" data-section="hours">Expediente</button>
-        <button class="btn btn-outline" data-section="skills">Serviços por profissional</button>
-        <button class="btn btn-outline" data-section="walkins">Presenciais <span id="walkinCount"></span></button>
-        <button class="btn btn-outline" data-section="accounts">Administradores</button>
-        <button class="btn btn-outline" data-section="security">Segurança / OTP</button>
-      </nav>
-      <section id="panel-agenda" class="card admin-panel">
-        <h2 class="section-title">Agenda e bloqueios</h2>
-        <label for="agendaDate" class="small">Data da agenda</label>
-        <input id="agendaDate" class="form-control" type="date" required>
-        <button id="refreshAgenda" class="btn btn-outline">Atualizar agenda</button>
-        <div id="agendaList" aria-live="polite"></div>
-        <h3 class="text-gold">Bloquear horário</h3>
-        <form id="blockForm">
-          <label for="blockBarber" class="small">Profissional</label>
-          <select id="blockBarber" class="form-control" required></select>
-          <div class="two-col">
-            <div><label for="blockStart" class="small">Início</label><input id="blockStart" class="form-control" type="time" value="12:00" required></div>
-            <div><label for="blockEnd" class="small">Fim</label><input id="blockEnd" class="form-control" type="time" value="13:00" required></div>
-          </div>
-          <label for="blockReason" class="small">Motivo</label>
-          <input id="blockReason" class="form-control" placeholder="Ex.: almoço, folga, compromisso" maxlength="150" required>
-          <p class="small muted">O bloqueio será aplicado à data selecionada na agenda.</p>
-          <button class="btn btn-gold" type="submit">Bloquear intervalo</button>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#08090b" />
+    <title>Painel | R&R Barbearia</title>
+    <link href="/assets/images/logo.jpg" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <script src="/assets/js/config.js" defer></script>
+    <script src="/assets/js/utils.js" defer></script>
+    <script src="/assets/js/events.js" defer></script>
+    <script src="/assets/js/admin-security.js" defer></script>
+    <script src="/assets/js/admin.js" defer></script>
+    <script src="/assets/js/admin-operations.js" defer></script>
+  </head>
+  <body>
+    <main class="admin-app">
+      <div class="admin-header">
+        <h1>R&R · Administração</h1>
+        <button id="logoutButton" class="btn btn-outline" hidden>Sair</button>
+      </div>
+      <p id="adminStatus" class="admin-status" role="status" aria-live="polite"></p>
+      <section id="loginSection" class="card admin-login">
+        <h2 class="section-title">Acesso ao painel</h2>
+        <form id="loginForm">
+          <label for="adminUsername" class="small">Usuário</label
+          ><input
+            id="adminUsername"
+            class="form-control"
+            autocomplete="username"
+            required
+            value="root"
+          />
+          <label for="adminPassword" class="small">Senha</label>
+          <input
+            id="adminPassword"
+            class="form-control"
+            type="password"
+            autocomplete="current-password"
+            required
+            maxlength="200"
+          />
+          <button class="btn btn-gold full" type="submit">Entrar</button>
         </form>
-        <div id="blocksList"></div>
+        <form id="otpLoginForm" hidden>
+          <label for="adminOtpCode" class="small"
+            >Código do autenticador ou código de recuperação</label
+          ><input
+            id="adminOtpCode"
+            class="form-control"
+            autocomplete="one-time-code"
+            required
+            maxlength="20"
+          /><button class="btn btn-gold full" type="submit">Verificar e entrar</button
+          ><button
+            class="btn btn-muted full"
+            type="button"
+            data-event-click="resetAdminLoginAction"
+          >
+            Voltar ao login
+          </button>
+        </form>
       </section>
-      <section id="panel-skills" class="card admin-panel" hidden><h2 class="section-title">Serviços do profissional</h2><div id="skillsContent"></div></section>
-      <section id="panel-walkins" class="card admin-panel" hidden><h2 class="section-title">Solicitações presenciais</h2><p class="notice">Confirme somente quando o cliente estiver presente e você puder iniciar o atendimento. Pedidos expiram em 5 minutos.</p><button class="btn btn-outline" onclick="action(loadWalkins)">Atualizar</button><div id="walkinsContent"></div></section>
-      <section id="panel-accounts" class="card admin-panel" hidden><h2 class="section-title">Administradores</h2><div id="accountsContent"></div></section>
-      <section id="panel-security" class="card admin-panel" hidden><h2 class="section-title">Verificação em duas etapas</h2><div id="securityContent"></div></section>
-      <section id="panel-services" class="card admin-panel" hidden></section>
-      <section id="panel-barbers" class="card admin-panel" hidden></section>
-      <section id="panel-products" class="card admin-panel" hidden></section>
-      <section id="panel-hours" class="card admin-panel" hidden>
-        <h2 class="section-title">Horário de funcionamento</h2>
-        <p class="small muted">Expediente em horário de Brasília, comum a todos os profissionais. Use bloqueios na agenda para folgas e intervalos individuais. Alterações no expediente não cancelam reservas existentes.</p>
-        <form id="hoursForm"><div id="hoursRows"></div><button type="submit" class="btn btn-gold full">Salvar expediente</button></form>
+      <section id="adminContent" hidden>
+        <nav class="admin-tabs" aria-label="Seções do painel">
+          <button class="btn btn-gold" data-section="agenda">Agenda</button>
+          <button class="btn btn-outline" data-section="services">Serviços</button>
+          <button class="btn btn-outline" data-section="barbers">Equipe</button>
+          <button class="btn btn-outline" data-section="products">Produtos</button>
+          <button class="btn btn-outline" data-section="hours">Expediente</button>
+          <button class="btn btn-outline" data-section="skills">Serviços por profissional</button>
+          <button class="btn btn-outline" data-section="walkins">
+            Presenciais <span id="walkinCount"></span>
+          </button>
+          <button class="btn btn-outline" data-section="accounts">Administradores</button>
+          <button class="btn btn-outline" data-section="history">Histórico completo</button>
+          <button class="btn btn-outline" data-section="personal">Meu expediente</button>
+          <button class="btn btn-outline" data-section="sales">Vender produtos</button>
+          <button class="btn btn-outline" data-section="reports">Rendimentos e vendas</button>
+          <button class="btn btn-outline" data-section="security">Segurança / OTP</button>
+        </nav>
+        <section id="panel-agenda" class="card admin-panel">
+          <h2 class="section-title">Agenda e bloqueios</h2>
+          <label for="agendaDate" class="small">Data da agenda</label>
+          <input id="agendaDate" class="form-control" type="date" required />
+          <button id="refreshAgenda" class="btn btn-outline">Atualizar agenda</button>
+          <button class="btn btn-outline" data-event-click="enableRemindersAction">
+            Ativar avisos de próximos clientes
+          </button>
+          <p class="small muted">
+            Avisos com 15 minutos de antecedência enquanto o painel estiver aberto. O navegador pode
+            suspender avisos em segundo plano.
+          </p>
+          <div id="agendaList" aria-live="polite"></div>
+          <h3 class="text-gold">Bloquear horário</h3>
+          <form id="blockForm">
+            <label><input id="blockFullDay" type="checkbox" /> Bloquear o dia inteiro</label>
+            <label for="blockBarber" class="small">Profissional</label>
+            <select id="blockBarber" class="form-control" required></select>
+            <div class="two-col">
+              <div>
+                <label for="blockStart" class="small">Início</label
+                ><input id="blockStart" class="form-control" type="time" value="12:00" required />
+              </div>
+              <div>
+                <label for="blockEnd" class="small">Fim</label
+                ><input id="blockEnd" class="form-control" type="time" value="13:00" required />
+              </div>
+            </div>
+            <label for="blockReason" class="small">Motivo</label>
+            <input
+              id="blockReason"
+              class="form-control"
+              placeholder="Ex.: almoço, folga, compromisso"
+              maxlength="150"
+              required
+            />
+            <p class="small muted">O bloqueio será aplicado à data selecionada na agenda.</p>
+            <button class="btn btn-gold" type="submit">Bloquear intervalo</button>
+          </form>
+          <div id="blocksList"></div>
+        </section>
+        <!-- Histórico paginado: filtros enviados à API, com escopo definido pela sessão. -->
+        <section id="panel-history" class="card admin-panel" hidden>
+          <h2>Histórico completo</h2>
+          <form id="historyFilter">
+            <label>Profissional<select id="historyBarber" class="form-control"></select></label>
+            <div class="two-col">
+              <label>De (opcional)<input id="historyFrom" type="date" class="form-control" /></label
+              ><label
+                >Até (opcional)<input id="historyTo" type="date" class="form-control"
+              /></label>
+            </div>
+            <label
+              >Situação<select id="historyStatus" class="form-control">
+                <option value="">Todas</option>
+                <option value="confirmed">Agendado</option>
+                <option value="in_progress">Em andamento</option>
+                <option value="completed">Concluído</option>
+                <option value="cancelled">Cancelado</option>
+              </select></label
+            ><button class="btn btn-gold">Consultar</button>
+          </form>
+          <p id="historyCount"></p>
+          <div id="historyList"></div>
+          <button id="historyPrev" class="btn btn-outline" data-event-click="previousHistoryPage">
+            Anterior</button
+          ><button id="historyNext" class="btn btn-outline" data-event-click="nextHistoryPage">
+            Próxima
+          </button>
+        </section>
+        <!-- Expediente pessoal não remove bloqueios administrativos. -->
+        <section id="panel-personal" class="card admin-panel" hidden>
+          <h2>Expediente individual</h2>
+          <p>
+            Horário de Brasília. Você pode ampliar ou reduzir o próprio expediente. Use os bloqueios
+            da agenda para almoço e pausas. Reservas existentes são preservadas e restrições do ROOT
+            prevalecem.
+          </p>
+          <label>Profissional<select id="personalBarber" class="form-control"></select></label>
+          <form id="personalHoursForm">
+            <div id="personalHoursRows"></div>
+            <button class="btn btn-gold">Salvar semana</button>
+          </form>
+          <h3>Expediente em uma data específica</h3>
+          <form id="exceptionForm">
+            <input id="exceptionDate" type="date" class="form-control" required /><label
+              ><input id="exceptionClosed" type="checkbox" /> Fechado neste dia</label
+            >
+            <div class="two-col">
+              <label
+                >Início<input
+                  id="exceptionOpen"
+                  class="form-control"
+                  type="time"
+                  value="09:00"
+                  required /></label
+              ><label
+                >Fim<input
+                  id="exceptionClose"
+                  class="form-control"
+                  type="time"
+                  value="18:00"
+                  required
+              /></label>
+            </div>
+            <button class="btn btn-gold">Salvar data</button>
+          </form>
+          <div id="personalExceptions"></div>
+        </section>
+        <!-- Venda avulsa ou vinculada a um atendimento em andamento. -->
+        <section id="panel-sales" class="card admin-panel" hidden>
+          <h2>Venda de produtos</h2>
+          <form id="saleForm">
+            <label
+              >Profissional<select id="saleBarber" class="form-control" required></select
+            ></label>
+            <div id="saleProducts"></div>
+            <div id="salePaymentFields"></div>
+            <button class="btn btn-gold">Registrar venda</button>
+          </form>
+        </section>
+        <!-- Relatórios distinguem recebimentos efetivos de estimativas. -->
+        <section id="panel-reports" class="card admin-panel" hidden>
+          <h2>Rendimentos e vendas</h2>
+          <div class="admin-actions">
+            <button class="btn btn-outline" data-event-click="reportToday">Hoje</button
+            ><button class="btn btn-outline" data-event-click="reportThisWeek">Semana</button
+            ><button class="btn btn-outline" data-event-click="reportThisMonth">Mês</button>
+          </div>
+          <form id="reportFilter">
+            <div class="two-col">
+              <label>De<input id="reportFrom" class="form-control" type="date" required /></label
+              ><label>Até<input id="reportTo" class="form-control" type="date" required /></label>
+            </div>
+            <label>Profissional<select id="reportBarber" class="form-control"></select></label
+            ><label
+              >Origem<select id="reportKind" class="form-control">
+                <option value="">Serviços e produtos</option>
+                <option value="service">Só serviços</option>
+                <option value="product">Só produtos</option>
+              </select></label
+            ><label
+              >Pagamento<select id="reportPayment" class="form-control">
+                <option value="">Todos</option>
+                <option>Dinheiro</option>
+                <option>Pix</option>
+                <option>Cartão de Débito</option>
+                <option>Cartão de Crédito</option>
+              </select></label
+            ><label
+              >Bandeira<input
+                id="reportBrand"
+                class="form-control"
+                list="cardBrands"
+                maxlength="40" /></label
+            ><button class="btn btn-gold">Filtrar</button>
+          </form>
+          <p id="reportTotals" class="notice"></p>
+          <p class="small muted">
+            Recebimentos seguem a data de conclusão ou venda. Estimativas usam a data agendada e a
+            comissão atual, não incluem produtos ainda não pagos nem representam repasses já
+            efetuados.
+          </p>
+          <div id="reportBreakdown" class="table-scroll"></div>
+          <h3>Lançamentos</h3>
+          <p id="reportCount"></p>
+          <div id="reportDetails"></div>
+          <button id="reportPrev" class="btn btn-outline" data-event-click="previousReportPage">
+            Anterior</button
+          ><button id="reportNext" class="btn btn-outline" data-event-click="nextReportPage">
+            Próxima
+          </button>
+          <section id="commissionSettings">
+            <h3>Comissão por profissional</h3>
+            <form id="commissionForm">
+              <label>Profissional<select id="commissionBarber" class="form-control"></select></label
+              ><label
+                >Porcentagem<input
+                  id="commissionPercent"
+                  class="form-control"
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  value="45"
+                  required
+              /></label>
+              <p>O padrão é 45%. Alterações só afetam recebimentos futuros.</p>
+              <button class="btn btn-gold">Salvar comissão</button>
+            </form>
+          </section>
+        </section>
+        <section id="panel-skills" class="card admin-panel" hidden>
+          <h2 class="section-title">Serviços do profissional</h2>
+          <div id="skillsContent"></div>
+        </section>
+        <section id="panel-walkins" class="card admin-panel" hidden>
+          <h2 class="section-title">Solicitações presenciais</h2>
+          <p class="notice">
+            Confirme somente quando o cliente estiver presente e você puder iniciar o atendimento.
+            Pedidos expiram em 5 minutos.
+          </p>
+          <button class="btn btn-outline" data-event-click="refreshWalkins">Atualizar</button>
+          <div id="walkinsContent"></div>
+        </section>
+        <section id="panel-accounts" class="card admin-panel" hidden>
+          <h2 class="section-title">Administradores</h2>
+          <div id="accountsContent"></div>
+        </section>
+        <section id="panel-security" class="card admin-panel" hidden>
+          <h2 class="section-title">Verificação em duas etapas</h2>
+          <div id="securityContent"></div>
+        </section>
+        <section id="panel-services" class="card admin-panel" hidden></section>
+        <section id="panel-barbers" class="card admin-panel" hidden></section>
+        <section id="panel-products" class="card admin-panel" hidden></section>
+        <section id="panel-hours" class="card admin-panel" hidden>
+          <h2 class="section-title">Horário de funcionamento</h2>
+          <p class="small muted">
+            Expediente em horário de Brasília, comum a todos os profissionais. Use bloqueios na
+            agenda para folgas e intervalos individuais. Alterações no expediente não cancelam
+            reservas existentes.
+          </p>
+          <form id="hoursForm">
+            <div id="hoursRows"></div>
+            <button type="submit" class="btn btn-gold full">Salvar expediente</button>
+          </form>
+        </section>
       </section>
-    </section>
-  </main>
-</body>
+    </main>
+    <!-- Modal de confirmação de recebimento e edição de produtos. -->
+    <dialog id="operationDialog" class="operation-dialog"></dialog>
+    <datalist id="cardBrands">
+      <option value="Visa"></option>
+      <option value="Mastercard"></option>
+      <option value="Elo"></option>
+      <option value="American Express"></option>
+      <option value="Hipercard"></option>
+      <option value="Outra"></option>
+    </datalist>
+  </body>
 </html>

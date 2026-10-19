@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 let currentCustomer = null,
   googleEnabled = false;
@@ -15,17 +15,18 @@ async function loadCustomer() {
 }
 function renderAccount(message = '') {
   const target = $('accountContent');
-  const input = (id, label, type = 'text', extra = '') => `<label class="small" for="${id}">${label}</label><input class="form-control" id="${id}" type="${type}" ${extra}>`;
+  const input = (id, label, type = 'text', extra = '') =>
+    `<label class="small" for="${id}">${label}</label><input class="form-control" id="${id}" type="${type}" ${extra}>`;
   if (!currentCustomer) {
     target.innerHTML = `<p class="small muted">Cadastre-se para escolher horários e acompanhar seus agendamentos.</p>
       <p class="text-danger small" role="alert">${esc(message)}</p>
-      <form onsubmit="customerLogin(event)"><h3 class="text-gold">Entrar</h3>
+      <form data-event-submit="customerLoginAction"><h3 class="text-gold">Entrar</h3>
         ${input('customerIdentifier', 'E-mail ou CPF', 'text', 'required autocomplete="username"')}
         ${input('customerLoginPassword', 'Senha', 'password', 'required autocomplete="current-password" maxlength="200"')}
         <button class="btn btn-gold full" type="submit">Entrar na minha conta</button>
       </form>
       ${googleEnabled ? '<a class="btn btn-outline full" href="/api/customer/google/start">Continuar com Google</a>' : '<p class="small muted">Login Google ainda não habilitado pela barbearia.</p>'}
-      <details class="account-register"><summary>Criar cadastro com CPF</summary><form onsubmit="customerRegister(event)">
+      <details class="account-register"><summary>Criar cadastro com CPF</summary><form data-event-submit="customerRegisterAction">
         ${input('registerName', 'Nome completo', 'text', 'required minlength="2" maxlength="90" autocomplete="name"')}
         ${input('registerEmail', 'E-mail', 'email', 'required maxlength="254" autocomplete="email"')}
         ${input('registerCpf', 'CPF', 'text', 'required maxlength="14" inputmode="numeric"')}
@@ -36,20 +37,20 @@ function renderAccount(message = '') {
       </form></details>`;
   } else if (!currentCustomer.complete) {
     target.innerHTML = `<h3 class="text-gold">Complete seu cadastro</h3><p class="small">Conta Google: ${esc(currentCustomer.email)}</p>
-      <form onsubmit="completeCustomer(event)">
+      <form data-event-submit="completeCustomerAction">
         ${input('completeName', 'Nome completo', 'text', `required minlength="2" maxlength="90" value="${esc(currentCustomer.name)}"`)}
         ${input('completeCpf', 'CPF', 'text', 'required maxlength="14" inputmode="numeric"')}
         ${input('completePhone', 'Telefone com DDD', 'tel', 'required maxlength="25"')}
         <p class="notice">O Google confirmou sua conta. Informe CPF e telefone para liberar a agenda. A validação do CPF não comprova identidade.</p>
         <button class="btn btn-gold full" type="submit">Completar cadastro</button>
-      </form><button class="btn btn-outline full" onclick="customerLogout()">Sair</button>`;
+      </form><button class="btn btn-outline full" data-event-click="customerLogoutAction">Sair</button>`;
   } else {
     target.innerHTML = `<h3 class="text-gold">Olá, ${esc(currentCustomer.name)}</h3><p class="small muted">${esc(currentCustomer.email)} · CPF ${esc(currentCustomer.cpfMasked)}</p>
-      <button class="btn btn-gold full" onclick="goToBooking()">Escolher um horário</button>
-      <button class="btn btn-outline full" onclick="openNow()">Marcar para agora · presencial</button>
-      <button class="btn btn-muted full" onclick="customerLogout()">Sair da conta</button>
-      <div id="nowContent"></div><h3 class="text-gold">Meus agendamentos</h3><button class="btn btn-outline" onclick="loadMyAppointments()">Atualizar</button><div id="myAppointments"></div>`;
-    loadMyAppointments().catch(error => toast(error.message));
+      <button class="btn btn-gold full" data-event-click="goToBookingAction">Escolher um horário</button>
+      <button class="btn btn-outline full" data-event-click="openNowAction">Marcar para agora · presencial</button>
+      <button class="btn btn-muted full" data-event-click="customerLogoutAction">Sair da conta</button>
+      <div id="nowContent"></div><h3 class="text-gold">Meus agendamentos</h3><button class="btn btn-outline" data-event-click="loadMyAppointmentsAction">Atualizar</button><div id="myAppointments"></div>`;
+    loadMyAppointments().catch((error) => toast(error.message));
   }
 }
 async function customerAction(event, callback) {
@@ -69,39 +70,45 @@ async function customerAction(event, callback) {
 }
 function customerLogin(event) {
   return customerAction(event, async () => {
-    currentCustomer = (await api('/api/customer/login', {
-      method: 'POST',
-      body: {
-        identifier: $('customerIdentifier').value,
-        password: $('customerLoginPassword').value
-      }
-    })).customer;
+    currentCustomer = (
+      await api('/api/customer/login', {
+        method: 'POST',
+        body: {
+          identifier: $('customerIdentifier').value,
+          password: $('customerLoginPassword').value
+        }
+      })
+    ).customer;
   });
 }
 function customerRegister(event) {
   return customerAction(event, async () => {
-    currentCustomer = (await api('/api/customer/register', {
-      method: 'POST',
-      body: {
-        name: $('registerName').value,
-        email: $('registerEmail').value,
-        cpf: $('registerCpf').value,
-        phone: $('registerPhone').value,
-        password: $('registerPassword').value
-      }
-    })).customer;
+    currentCustomer = (
+      await api('/api/customer/register', {
+        method: 'POST',
+        body: {
+          name: $('registerName').value,
+          email: $('registerEmail').value,
+          cpf: $('registerCpf').value,
+          phone: $('registerPhone').value,
+          password: $('registerPassword').value
+        }
+      })
+    ).customer;
   });
 }
 function completeCustomer(event) {
   return customerAction(event, async () => {
-    currentCustomer = (await api('/api/customer/profile', {
-      method: 'PUT',
-      body: {
-        name: $('completeName').value,
-        cpf: $('completeCpf').value,
-        phone: $('completePhone').value
-      }
-    })).customer;
+    currentCustomer = (
+      await api('/api/customer/profile', {
+        method: 'PUT',
+        body: {
+          name: $('completeName').value,
+          cpf: $('completeCpf').value,
+          phone: $('completePhone').value
+        }
+      })
+    ).customer;
   });
 }
 async function customerLogout() {
@@ -131,7 +138,19 @@ async function loadMyAppointments() {
   const customerId = currentCustomer.id;
   const data = await api('/api/customer/appointments');
   if (!$('myAppointments') || currentCustomer?.id !== customerId) return;
-  $('myAppointments').innerHTML = data.walkins.map(item => `<div class="appointment"><strong>Presencial · ${esc(item.service)}</strong><p>${esc(item.barber)} · ${requestLabels[item.status]}</p>${item.status === 'pending' ? '<p class="small muted">Confirmação em até 5 minutos. Aguarde no local.</p>' : ''}</div>`).join('') + data.appointments.map(item => `<div class="appointment"><strong>${esc(item.service)}</strong><p>${formatDate(item.date)} · ${clock(item.start)} – ${clock(item.end)} · ${esc(item.barber)}</p><p>${item.status === 'confirmed' ? 'Confirmado' : 'Cancelado'} · ${money(item.price)}</p></div>`).join('') || '<p class="empty">Você ainda não tem agendamentos.</p>';
+  $('myAppointments').innerHTML =
+    data.walkins
+      .map(
+        (item) =>
+          `<div class="appointment"><strong>Presencial · ${esc(item.service)}</strong><p>${esc(item.barber)} · ${requestLabels[item.status]}</p>${item.status === 'pending' ? '<p class="small muted">Confirmação em até 5 minutos. Aguarde no local.</p>' : ''}</div>`
+      )
+      .join('') +
+      data.appointments
+        .map(
+          (item) =>
+            `<div class="appointment"><strong>${esc(item.service)}</strong><p>${formatDate(item.date)} · ${clock(item.start)} – ${clock(item.end)} · ${esc(item.barber)}</p><p>${{ confirmed: 'Agendado', in_progress: 'Em andamento', completed: 'Concluído', cancelled: 'Cancelado' }[item.status]} · ${money(item.price)}</p>${item.status === 'confirmed' ? `<button class="btn btn-outline" data-event-click="cancelCustomerAppointmentAction" data-arg-0="${esc(item.id)}">Cancelar agendamento</button>` : ''}</div>`
+        )
+        .join('') || '<p class="empty">Você ainda não tem agendamentos.</p>';
 }
 async function openNow() {
   switchTab('conta');
@@ -143,13 +162,21 @@ async function openNow() {
   $('nowContent').innerHTML = '<p class="small">Consultando profissionais disponíveis agora…</p>';
   try {
     const options = await api('/api/now');
-    $('nowContent').innerHTML = `<h3 class="text-gold">Atendimento presencial agora</h3><p class="notice">Escolha somente se você estiver na barbearia. O profissional tem 5 minutos para confirmar. Seu atendimento só estará marcado após essa confirmação.</p>
-      <label for="nowPayment" class="small">Pagamento no atendimento</label><select id="nowPayment" class="form-control">${['Pix', 'Cartão de Crédito', 'Cartão de Débito', 'Dinheiro'].map(p => `<option>${p}</option>`).join('')}</select>
-      <div class="select-grid">${options.map(item => {
-      const service = services.find(s => s.id === item.serviceId),
-        barber = barbers.find(b => b.id === item.barberId);
-      return service && barber ? `<button class="select-card" onclick="askNow(${item.serviceId},${item.barberId},this)"><span><strong>${esc(service.name)}</strong><span class="detail service-duration">${esc(barber.name)} · ${service.duration} min · ${money(service.price)}</span></span><span>Solicitar</span></button>` : '';
-    }).join('') || '<p class="empty">Nenhum profissional disponível agora. Você pode escolher outro horário.</p>'}</div>`;
+    $('nowContent').innerHTML =
+      `<h3 class="text-gold">Atendimento presencial agora</h3><p class="notice">Escolha somente se você estiver na barbearia. O profissional tem 5 minutos para confirmar. Seu atendimento só estará marcado após essa confirmação.</p>
+      <label for="nowPayment" class="small">Pagamento no atendimento</label><select id="nowPayment" class="form-control">${['Pix', 'Cartão de Crédito', 'Cartão de Débito', 'Dinheiro'].map((p) => `<option>${p}</option>`).join('')}</select>
+      <div class="select-grid">${
+        options
+          .map((item) => {
+            const service = services.find((s) => s.id === item.serviceId),
+              barber = barbers.find((b) => b.id === item.barberId);
+            return service && barber
+              ? `<button class="select-card" data-event-click="askNowAction" data-arg-0="${esc(item.serviceId)}" data-arg-1="${esc(item.barberId)}"><span><strong>${esc(service.name)}</strong><span class="detail service-duration">${esc(barber.name)} · ${service.duration} min · ${money(service.price)}</span></span><span>Solicitar</span></button>`
+              : '';
+          })
+          .join('') ||
+        '<p class="empty">Nenhum profissional disponível agora. Você pode escolher outro horário.</p>'
+      }</div>`;
   } catch (error) {
     $('nowContent').innerHTML = `<p class="text-danger small">${esc(error.message)}</p>`;
   }
@@ -165,7 +192,8 @@ async function askNow(serviceId, barberId, button) {
         payment: $('nowPayment').value
       }
     });
-    $('nowContent').innerHTML = '<p class="notice" role="status">Solicitação enviada. Aguarde a confirmação do profissional abaixo.</p>';
+    $('nowContent').innerHTML =
+      '<p class="notice" role="status">Solicitação enviada. Aguarde a confirmação do profissional abaixo.</p>';
     await loadMyAppointments();
   } catch (error) {
     toast(error.message);
@@ -173,5 +201,16 @@ async function askNow(serviceId, barberId, button) {
   }
 }
 setInterval(() => {
-  if (!document.hidden && $('tab-conta')?.classList.contains('active') && currentCustomer?.complete) loadMyAppointments().catch(() => {});
+  if (!document.hidden && $('tab-conta')?.classList.contains('active') && currentCustomer?.complete)
+    loadMyAppointments().catch(() => {});
 }, 15000);
+
+async function cancelCustomerAppointment(id) {
+  if (!confirm('Cancelar este agendamento?')) return;
+  try {
+    await api('/api/customer/appointments/' + id, { method: 'DELETE' });
+    await loadMyAppointments();
+  } catch (error) {
+    alert(error.message);
+  }
+}

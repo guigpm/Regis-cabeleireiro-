@@ -3,9 +3,10 @@ import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 export function openDatabase(filename) {
-  if (filename !== ':memory:') mkdirSync(dirname(resolve(filename)), {
-    recursive: true
-  });
+  if (filename !== ':memory:')
+    mkdirSync(dirname(resolve(filename)), {
+      recursive: true
+    });
   const db = new DatabaseSync(filename);
   try {
     db.exec(`
@@ -47,10 +48,35 @@ export function openDatabase(filename) {
       const seed = JSON.parse(readFileSync(new URL('./seed.json', import.meta.url)));
       db.exec('BEGIN IMMEDIATE');
       try {
-        for (const s of seed.services) db.prepare('INSERT INTO services(id,name,price,duration) VALUES(?,?,?,?)').run(s.id, s.name, s.price, s.duration);
-        for (const b of seed.barbers) db.prepare('INSERT INTO barbers(id,name,spec,photo) VALUES(?,?,?,?)').run(b.id, b.name, b.spec, b.photo);
-        for (const p of seed.products) db.prepare('INSERT INTO products(id,name,price,category,image) VALUES(?,?,?,?,?)').run(p.id, p.name, p.price, p.category, p.image);
-        for (let day = 0; day < 7; day++) db.prepare('INSERT INTO hours VALUES(?,?,?,?)').run(day, 540, day === 6 ? 1080 : 1200, day === 0 ? 1 : 0);
+        for (const s of seed.services)
+          db.prepare('INSERT INTO services(id,name,price,duration) VALUES(?,?,?,?)').run(
+            s.id,
+            s.name,
+            s.price,
+            s.duration
+          );
+        for (const b of seed.barbers)
+          db.prepare('INSERT INTO barbers(id,name,spec,photo) VALUES(?,?,?,?)').run(
+            b.id,
+            b.name,
+            b.spec,
+            b.photo
+          );
+        for (const p of seed.products)
+          db.prepare('INSERT INTO products(id,name,price,category,image) VALUES(?,?,?,?,?)').run(
+            p.id,
+            p.name,
+            p.price,
+            p.category,
+            p.image
+          );
+        for (let day = 0; day < 7; day++)
+          db.prepare('INSERT INTO hours VALUES(?,?,?,?)').run(
+            day,
+            540,
+            day === 6 ? 1080 : 1200,
+            day === 0 ? 1 : 0
+          );
         db.prepare('INSERT INTO settings VALUES(?,?)').run('whatsapp', seed.whatsapp);
         db.prepare('INSERT INTO settings VALUES(?,?)').run('seeded', '1');
         db.exec('COMMIT');
@@ -64,9 +90,12 @@ export function openDatabase(filename) {
   } catch (error) {
     db.close();
     if (error.errcode === 5 || error.errcode === 6) {
-      throw new Error('O SQLite está bloqueado. Verifique se outro processo mantém uma transação aberta. Se DB_PATH aponta para NAS/SMB/NFS, configure um arquivo em disco local; sem DB_PATH, o padrão é a pasta de dados do usuário.', {
-        cause: error
-      });
+      throw new Error(
+        'O SQLite está bloqueado. Verifique se outro processo mantém uma transação aberta. Se DB_PATH aponta para NAS/SMB/NFS, configure um arquivo em disco local; sem DB_PATH, o padrão é a pasta de dados do usuário.',
+        {
+          cause: error
+        }
+      );
     }
     throw error;
   }

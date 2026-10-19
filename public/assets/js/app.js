@@ -1,7 +1,8 @@
-"use strict";
+'use strict';
 
-document.addEventListener('keydown', event => {
-  if (event.key === 'Escape') document.querySelectorAll('.modal.active').forEach(modal => modal.classList.remove('active'));
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape')
+    document.querySelectorAll('.modal.active').forEach((modal) => modal.classList.remove('active'));
 });
 async function loadCatalog() {
   try {
@@ -12,7 +13,12 @@ async function loadCatalog() {
     hours = data.hours;
     WHATSAPP = data.whatsapp;
     const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-    $('businessHours').innerHTML = hours.map(day => `<div class="row-between"><span class="muted">${days[day.weekday]}</span><strong>${day.closed ? 'Fechado' : `${clock(day.opens)} – ${clock(day.closes)}`}</strong></div>`).join('');
+    $('businessHours').innerHTML = hours
+      .map(
+        (day) =>
+          `<div class="row-between"><span class="muted">${days[day.weekday]}</span><strong>${day.closed ? 'Fechado' : `${clock(day.opens)} – ${clock(day.closes)}`}</strong></div>`
+      )
+      .join('');
     await loadCustomer();
     renderBooking();
     renderProducts();
@@ -23,8 +29,10 @@ async function loadCatalog() {
       history.replaceState(null, '', '/#conta');
     }
   } catch (error) {
-    $('bookingContent').innerHTML = `<p class="text-danger small">${esc(error.message)}</p><button class="btn btn-outline full" onclick="loadCatalog()">Tentar novamente</button>`;
-    $('productsGrid').innerHTML = '<p class="empty span-full">Catálogo indisponível. Tente recarregar a página.</p>';
+    $('bookingContent').innerHTML =
+      `<p class="text-danger small">${esc(error.message)}</p><button class="btn btn-outline full" data-event-click="loadCatalogAction">Tentar novamente</button>`;
+    $('productsGrid').innerHTML =
+      '<p class="empty span-full">Catálogo indisponível. Tente recarregar a página.</p>';
   }
 }
 window.addEventListener('DOMContentLoaded', loadCatalog);

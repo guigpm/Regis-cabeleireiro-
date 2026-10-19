@@ -8,7 +8,10 @@ export function check(condition, message, status = 400) {
   if (!condition) throw new HttpError(status, message);
 }
 export function text(value, label, max = 100, min = 1) {
-  check(typeof value === 'string' && value.trim().length >= min && value.trim().length <= max, `${label} inválido.`);
+  check(
+    typeof value === 'string' && value.trim().length >= min && value.trim().length <= max,
+    `${label} inválido.`
+  );
   return value.trim();
 }
 export function integer(value, label, min = 1, max = Number.MAX_SAFE_INTEGER) {
@@ -23,13 +26,22 @@ export function price(value) {
 }
 export function image(value = '') {
   check(typeof value === 'string' && value.length <= 1250000, 'Imagem inválida ou muito grande.');
-  check(!value || /^https?:\/\/[^\s"'<>]+$/i.test(value) || /^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(value) || /^\/assets\/images\/[\w.-]+$/.test(value), 'Use uma foto PNG, JPEG, WebP, GIF ou um link HTTP(S).');
+  check(
+    !value ||
+      /^https?:\/\/[^\s"'<>]+$/i.test(value) ||
+      /^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(value) ||
+      /^\/assets\/images\/[\w.-]+$/.test(value),
+    'Use uma foto PNG, JPEG, WebP, GIF ou um link HTTP(S).'
+  );
   return value;
 }
 export function date(value) {
   check(typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value), 'Data inválida.');
   const parsed = new Date(value + 'T12:00:00Z');
-  check(!Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value, 'Data inválida.');
+  check(
+    !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value,
+    'Data inválida.'
+  );
   return value;
 }
 export function minutes(value) {

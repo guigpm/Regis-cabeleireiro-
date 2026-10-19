@@ -1,18 +1,32 @@
-import { randomBytes } from 'node:crypto';
+import { randomBytes, createHash } from 'node:crypto';
 import { check } from './validation.js';
 export function sessions(name, secure = false, maxAge = 8 * 3600, sameSite = 'Strict') {
   const entries = new Map();
-  const cookie = (value, age) => `${name}=${value}; HttpOnly; SameSite=${sameSite}; Path=/; Max-Age=${age}${secure ? '; Secure' : ''}`;
-  const token = req => (req.headers.cookie || '').split(';').map(c => c.trim()).find(c => c.startsWith(name + '='))?.slice(name.length + 1);
+  const digest = (token) =>
+    createHash('sha256')
+      .update(token || '')
+      .digest('hex');
+  const idleMs = name === 'rr_session' ? 30 * 60000 : maxAge * 1000;
+  const cookie = (value, age) =>
+    `${name}=${value}; HttpOnly; SameSite=${sameSite}; Path=/; Max-Age=${age}${secure ? '; Secure' : ''}`;
+  const token = (req) =>
+    (req.headers.cookie || '')
+      .split(';')
+      .map((c) => c.trim())
+      .find((c) => c.startsWith(name + '='))
+      ?.slice(name.length + 1);
   function prune() {
-    for (const [key, item] of entries) if (item.expires <= Date.now()) entries.delete(key);
+    for (const [key, item] of entries)
+      if (item.expires <= Date.now() || item.lastSeen + idleMs <= Date.now()) entries.delete(key);
   }
   return {
     create(res, value, req) {
       prune();
-      if (req) entries.delete(token(req));
+      if (req) entries.delete(digest(token(req)));
       const key = randomBytes(32).toString('hex');
-      entries.set(key, {
+      check(entries.size < 10000, 'Muitas sessões abertas. Tente mais tarde.', 503);
+      entries.set(digest(key), {
+        lastSeen: Date.now(),
         value,
         expires: Date.now() + maxAge * 1000
       });
@@ -21,7 +35,9 @@ export function sessions(name, secure = false, maxAge = 8 * 3600, sameSite = 'St
     },
     read(req) {
       prune();
-      return entries.get(token(req))?.value;
+      const item = entries.get(digest(token(req)));
+      if (item) item.lastSeen = Date.now();
+      return item?.value;
     },
     require(req) {
       const value = this.read(req);
@@ -29,7 +45,7 @@ export function sessions(name, secure = false, maxAge = 8 * 3600, sameSite = 'St
       return value;
     },
     destroy(req, res) {
-      entries.delete(token(req));
+      entries.delete(digest(token(req)));
       res.setHeader('Set-Cookie', cookie('', 0));
     },
     invalidate(predicate) {
